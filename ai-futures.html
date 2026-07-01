@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Steering the Future</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#EAEBF6;
+    --muted:#9AA0C8;
+    --faint:#6B7099;
+    --glass:rgba(14,18,42,0.55);
+    --glass-line:rgba(150,160,220,0.16);
+    --display:"Space Grotesk",system-ui,sans-serif;
+    --body:"Inter",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{min-height:100%}
+  body{
+    font-family:var(--body);
+    color:var(--ink);
+    background:#0B1026;
+    background-attachment:fixed;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    transition:none;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:38px 22px 64px}
+
+  /* Header */
+  header{margin-bottom:30px}
+  .eyebrow{
+    font-family:var(--mono);font-size:12px;letter-spacing:0.22em;
+    text-transform:uppercase;color:var(--faint);margin-bottom:14px;
+  }
+  h1{
+    font-family:var(--display);font-weight:700;
+    font-size:clamp(30px,5.2vw,52px);line-height:1.02;
+    letter-spacing:-0.02em;margin-bottom:12px;max-width:16ch;
+  }
+  h1 .soft{color:var(--muted);font-weight:500}
+  .lede{color:var(--muted);max-width:58ch;font-size:clamp(15px,1.8vw,17px)}
+
+  /* Layout */
+  .grid{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:22px;align-items:start}
+  @media(max-width:860px){.grid{grid-template-columns:1fr}}
+
+  .panel{
+    background:var(--glass);
+    border:1px solid var(--glass-line);
+    border-radius:18px;padding:22px;
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  }
+  .panel + .panel{margin-top:18px}
+  .panel-title{
+    font-family:var(--mono);font-size:11px;letter-spacing:0.18em;
+    text-transform:uppercase;color:var(--faint);margin-bottom:18px;
+  }
+
+  /* Levers */
+  .lever{margin-bottom:22px}
+  .lever:last-child{margin-bottom:4px}
+  .lever-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px;gap:10px}
+  .lever-name{font-family:var(--display);font-weight:600;font-size:15.5px}
+  .lever-val{font-family:var(--mono);font-size:12px;color:var(--ink);opacity:0.85;white-space:nowrap}
+  .poles{display:flex;justify-content:space-between;font-size:11.5px;color:var(--faint);margin-top:7px}
+  input[type=range]{
+    -webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:5px;
+    background:rgba(150,160,220,0.18);outline:none;cursor:pointer;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;
+    background:#EAEBF6;border:none;box-shadow:0 0 0 4px rgba(234,235,246,0.14);cursor:grab;
+  }
+  input[type=range]::-moz-range-thumb{
+    width:20px;height:20px;border-radius:50%;background:#EAEBF6;border:none;
+    box-shadow:0 0 0 4px rgba(234,235,246,0.14);cursor:grab;
+  }
+  input[type=range]:focus-visible{box-shadow:0 0 0 3px rgba(120,160,255,0.6)}
+
+  /* Presets */
+  .presets{display:flex;flex-wrap:wrap;gap:8px}
+  .preset{
+    font-family:var(--mono);font-size:12px;color:var(--muted);
+    background:rgba(150,160,220,0.07);border:1px solid var(--glass-line);
+    border-radius:999px;padding:7px 13px;cursor:pointer;transition:all .18s ease;
+  }
+  .preset:hover{color:var(--ink);border-color:rgba(150,160,220,0.4);background:rgba(150,160,220,0.14)}
+  .preset:focus-visible{outline:2px solid rgba(120,160,255,0.7);outline-offset:2px}
+
+  /* Stage / cone */
+  .stage{position:relative;overflow:hidden}
+  .headline{
+    font-family:var(--display);font-weight:700;font-size:clamp(20px,3vw,28px);
+    letter-spacing:-0.01em;margin-bottom:4px;transition:color .5s ease;
+  }
+  .sub{color:var(--muted);font-size:13.5px;margin-bottom:6px}
+  svg{display:block;width:100%;height:auto}
+  .axis-label{font-family:var(--mono);font-size:11px;fill:var(--faint);letter-spacing:0.1em}
+
+  /* Domain cards */
+  .domains{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}
+  @media(max-width:560px){.domains{grid-template-columns:1fr}}
+  .card{
+    background:var(--glass);border:1px solid var(--glass-line);border-radius:16px;
+    padding:16px 17px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  }
+  .card-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:11px;gap:8px}
+  .card-name{font-family:var(--display);font-weight:600;font-size:15px}
+  .score{font-family:var(--mono);font-size:12px}
+  .score b{font-size:15px;font-weight:500}
+  .meter{height:6px;border-radius:6px;background:rgba(150,160,220,0.15);overflow:hidden;margin-bottom:11px}
+  .meter-fill{height:100%;border-radius:6px;width:50%;transition:width .55s cubic-bezier(.4,0,.2,1),background .55s ease}
+  .card-text{font-size:13.5px;color:var(--muted);line-height:1.5;min-height:3.4em;transition:opacity .3s ease}
+
+  footer{margin-top:30px;color:var(--faint);font-size:12.5px;line-height:1.6;max-width:70ch}
+  footer b{color:var(--muted);font-weight:600}
+
+  @media(prefers-reduced-motion:reduce){
+    *{transition:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">An interactive on the choices ahead</div>
+    <h1>The same technology.<br><span class="soft">Very different futures.</span></h1>
+    <p class="lede">AI doesn't arrive with its consequences pre-decided. The outcomes depend on choices we're making right now. Move the four levers below and watch how the world of 2040 bends — for better or worse.</p>
+  </header>
+
+  <div class="grid">
+    <!-- Controls -->
+    <div>
+      <div class="panel">
+        <div class="panel-title">The four levers</div>
+
+        <div class="lever">
+          <div class="lever-head"><span class="lever-name">How fast we build</span><span class="lever-val" id="v0">— balanced</span></div>
+          <input type="range" min="0" max="100" value="85" id="l0" aria-label="How fast we build">
+          <div class="poles"><span>Deliberate</span><span>Full speed</span></div>
+        </div>
+
+        <div class="lever">
+          <div class="lever-head"><span class="lever-name">Who gets the keys</span><span class="lever-val" id="v1">— balanced</span></div>
+          <input type="range" min="0" max="100" value="38" id="l1" aria-label="Who gets the keys">
+          <div class="poles"><span>A few players</span><span>Everyone</span></div>
+        </div>
+
+        <div class="lever">
+          <div class="lever-head"><span class="lever-name">How tightly we govern</span><span class="lever-val" id="v2">— balanced</span></div>
+          <input type="range" min="0" max="100" value="30" id="l2" aria-label="How tightly we govern">
+          <div class="poles"><span>Hands off</span><span>Strong oversight</span></div>
+        </div>
+
+        <div class="lever">
+          <div class="lever-head"><span class="lever-name">What we build it for</span><span class="lever-val" id="v3">— balanced</span></div>
+          <input type="range" min="0" max="100" value="32" id="l3" aria-label="What we build it for">
+          <div class="poles"><span>Profit first</span><span>Public good</span></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Try a path</div>
+        <div class="presets" id="presets"></div>
+      </div>
+    </div>
+
+    <!-- Stage -->
+    <div>
+      <div class="panel stage">
+        <div class="headline" id="headline">A future still up for grabs</div>
+        <div class="sub" id="subline">Overall trajectory across six measures of how life could go.</div>
+        <svg id="cone" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid meet" role="img" aria-label="A fan of possible trajectories from today to 2040">
+          <defs>
+            <linearGradient id="glow" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+              <stop offset="1" stop-color="#fff" stop-opacity="0.10"/>
+            </linearGradient>
+          </defs>
+          <line x1="70" y1="185" x2="585" y2="185" stroke="rgba(150,160,220,0.2)" stroke-width="1" stroke-dasharray="2 6"/>
+          <g id="lines"></g>
+          <circle cx="70" cy="185" r="5" fill="#EAEBF6"/>
+          <text class="axis-label" x="58" y="210">NOW</text>
+          <text class="axis-label" x="556" y="210">2040</text>
+        </svg>
+      </div>
+
+      <div class="domains" id="domains"></div>
+    </div>
+  </div>
+
+  <footer>
+    <b>This is a thinking tool, not a forecast.</b> The directions each lever pushes reflect common themes in expert discussion about AI's effects. The math underneath is deliberately simple and transparent, so the tradeoffs stay visible rather than hidden behind false precision. The real point: notice that no lever is purely good, and that how we steer matters as much as how powerful the technology becomes.
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---- Domains: weights are contribution to score per +1 of each lever (lever range -1..+1) ----
+  // levers order: [pace, access, guard, prio]  (each -1..+1, + = right-hand pole)
+  const DOMAINS = [
+    { name:"Jobs & work",        w:[-8, 12,  2, 10], base:50 },
+    { name:"Climate & nature",   w:[-10, 3,  8, 12], base:50 },
+    { name:"Shared prosperity",  w:[-6, 15,  6, 12], base:50 },
+    { name:"Learning & knowledge",w:[ 6, 14, -3,  8], base:50 },
+    { name:"Democracy & trust",  w:[-8,  4, 12,  8], base:50 },
+    { name:"Safety & control",   w:[-14,-4, 16,  6], base:50 },
+  ];
+
+  const TEXT = {
+    "Jobs & work":[
+      "Automation outruns retraining. Whole job categories vanish faster than new ones appear, and the safety net frays.",
+      "Disruption hits hard. Some thrive, but many are left scrambling to reskill with little support.",
+      "Old jobs fade as new ones form. The transition is bumpy and depends a lot on where you live and work.",
+      "AI takes the drudgery; people move toward more creative, human work, with real support to retrain.",
+      "Work is reimagined. Productivity soars and is broadly shared, freeing people for care, craft, and community."],
+    "Climate & nature":[
+      "A growth-at-all-costs race and surging compute push emissions up while ecosystems get little attention.",
+      "AI's energy appetite outweighs its green gains; progress on climate is patchy at best.",
+      "AI trims some waste and speeds some clean tech, but its own footprint keeps the ledger near even.",
+      "Pointed at the problem, AI accelerates clean energy, smarter grids, and materials science.",
+      "AI becomes a climate engine — optimizing energy, modeling ecosystems, unlocking breakthroughs fast."],
+    "Shared prosperity":[
+      "Gains pool at the very top. A handful of owners capture the upside while most fall behind.",
+      "The wealth gap widens. Benefits are real but reach far fewer people than the disruption does.",
+      "Prosperity grows unevenly — some communities surge ahead while others are left out of the story.",
+      "Broad access spreads the gains. More people can build, earn, and start something of their own.",
+      "Abundance is widely shared. Powerful tools in many hands lift living standards across the board."],
+    "Learning & knowledge":[
+      "Real tutoring stays behind paywalls, and a flood of low-quality slop erodes trust in what's true.",
+      "Learning tools exist but reach the already-advantaged first, widening the knowledge gap.",
+      "Personalized learning spreads slowly and unevenly, alongside new worries about cheating and depth.",
+      "A patient tutor for everyone. Curiosity gets cheaper to follow, and skills are easier to build.",
+      "Learning is transformed — anyone, anywhere can master almost anything, guided step by step."],
+    "Democracy & trust":[
+      "Synthetic media and tailored manipulation overwhelm institutions; shared reality splinters.",
+      "Misinformation moves faster than the fixes. Trust in elections and media keeps slipping.",
+      "Institutions adapt slowly. New tools help and harm public discourse in roughly equal measure.",
+      "Provenance tools and transparency help people tell real from fake and rebuild some trust.",
+      "AI strengthens civic life — surfacing good information, widening participation, holding power to account."],
+    "Safety & control":[
+      "Capabilities sprint ahead of our ability to control them. The margin for a serious accident is thin.",
+      "Powerful systems ship faster than they're understood; oversight is always a step behind.",
+      "Safety keeps rough pace with capability — real risks remain, but so do real guardrails.",
+      "Careful development and strong oversight keep advanced systems testable and in check.",
+      "Robust governance and aligned design make powerful AI dependable and broadly trusted."],
+  };
+
+  const HEADLINES = [
+    "A future that slipped away from us",
+    "A hard road, unevenly walked",
+    "A future still up for grabs",
+    "A future bending toward the better",
+    "A future we steered well",
+  ];
+
+  const VAL_WORDS = {
+    0:["full deliberate","fast","balanced","open","everyone"], // placeholder, set per-lever below
+  };
+  const LEVER_WORDS = [
+    ["full deliberate","deliberate","balanced","fast","full speed"],
+    ["locked up","concentrated","balanced","open","wide open"],
+    ["hands off","light touch","balanced","firm","strong oversight"],
+    ["profit first","profit-leaning","balanced","mission-leaning","public good"],
+  ];
+
+  const PRESETS = [
+    { name:"Reset",        v:[50,50,50,50] },
+    { name:"Ethical",  v:[42,100,78,100] },
+    { name:"Corpo",  v:[100,1,1,1] },
+    { name:"Lock it down",  v:[6,28,100,62] },
+    { name:"Let it rip",   v:[100,82,6,22] },
+    { name:"Where we are (2026 estimated)", v:[85,38,30,32] },
+  ];
+
+  // ---- helpers ----
+  const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+  const relu=x=>Math.max(0,x);
+  function hexToRgb(h){const n=parseInt(h.slice(1),16);return[(n>>16)&255,(n>>8)&255,n&255];}
+  function rgbToHex(r){return"#"+r.map(v=>clamp(Math.round(v),0,255).toString(16).padStart(2,"0")).join("");}
+  function lerpRgb(a,b,t){return a.map((v,i)=>v+(b[i]-v)*t);}
+  // score 0..100 -> color: ember -> amber -> teal
+  const C_LOW=hexToRgb("#D85C6E"), C_MID=hexToRgb("#E9B45C"), C_HI=hexToRgb("#4FD0BE");
+  function scoreColor(s){
+    const t=clamp(s,0,100)/100;
+    return t<0.5 ? rgbToHex(lerpRgb(C_LOW,C_MID,t/0.5)) : rgbToHex(lerpRgb(C_MID,C_HI,(t-0.5)/0.5));
+  }
+  // sky: grim (cold ember dusk) -> bright (indigo + dawn gold)
+  const SKY_TOP_LOW=hexToRgb("#1C2138"), SKY_BOT_LOW=hexToRgb("#4A2746");
+  const SKY_TOP_HI =hexToRgb("#121A3C"), SKY_BOT_HI =hexToRgb("#C98B4A");
+  function sky(s){
+    const t=clamp(s,0,100)/100;
+    const top=rgbToHex(lerpRgb(SKY_TOP_LOW,SKY_TOP_HI,t));
+    const bot=rgbToHex(lerpRgb(SKY_BOT_LOW,SKY_BOT_HI,t));
+    return`linear-gradient(180deg, ${top} 0%, ${top} 30%, ${bot} 140%)`;
+  }
+  function band(s){ return s<32?0 : s<46?1 : s<58?2 : s<72?3 : 4; }
+
+  // ---- state ----
+  const sliders=[0,1,2,3].map(i=>document.getElementById("l"+i));
+  const valEls =[0,1,2,3].map(i=>document.getElementById("v"+i));
+  let displayOverall=50, targetOverall=50, raf=null;
+  const reduce=window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+
+  // build domain cards
+  const domainsEl=document.getElementById("domains");
+  DOMAINS.forEach((d,i)=>{
+    const c=document.createElement("div");
+    c.className="card";
+    c.innerHTML=`<div class="card-head"><span class="card-name">${d.name}</span>
+      <span class="score" id="sc${i}"><b>50</b> / 100</span></div>
+      <div class="meter"><div class="meter-fill" id="mf${i}"></div></div>
+      <div class="card-text" id="ct${i}"></div>`;
+    domainsEl.appendChild(c);
+  });
+
+  // build presets
+  const presetsEl=document.getElementById("presets");
+  PRESETS.forEach(p=>{
+    const b=document.createElement("button");
+    b.className="preset";b.textContent=p.name;
+    b.addEventListener("click",()=>{
+      p.v.forEach((val,i)=>sliders[i].value=val);
+      compute();
+    });
+    presetsEl.appendChild(b);
+  });
+
+  function compute(){
+    const lv=sliders.map(s=>(s.value-50)/50); // -1..1
+    const [pace,access,guard,prio]=lv;
+
+    // safety interaction: racing + weak governance is dangerous
+    const racePenalty = -12*relu(pace)*relu(-guard);
+
+    const scores=DOMAINS.map(d=>{
+      let s=d.base + d.w[0]*pace + d.w[1]*access + d.w[2]*guard + d.w[3]*prio;
+      if(d.name==="Safety & control") s+=racePenalty;
+      return clamp(s,2,98);
+    });
+
+    const overall=scores.reduce((a,b)=>a+b,0)/scores.length;
+    targetOverall=overall;
+
+    // update lever value words
+    lv.forEach((val,i)=>{
+      const idx=clamp(Math.round((val+1)/2*4),0,4);
+      valEls[i].textContent="— "+LEVER_WORDS[i][idx];
+    });
+
+    // update cards
+    scores.forEach((s,i)=>{
+      const col=scoreColor(s);
+      const mf=document.getElementById("mf"+i);
+      mf.style.width=s+"%"; mf.style.background=col;
+      const sc=document.getElementById("sc"+i);
+      sc.innerHTML=`<b style="color:${col}">${Math.round(s)}</b> / 100`;
+      document.getElementById("ct"+i).textContent=TEXT[DOMAINS[i].name][band(s)];
+    });
+
+    // headline
+    const hl=document.getElementById("headline");
+    hl.textContent=HEADLINES[band(overall)];
+    hl.style.color=scoreColor(overall);
+
+    // volatility -> cone spread
+    const steerQ=((guard+prio+access)/3+1)/2;            // 0..1
+    const volatility=clamp(relu(pace)*(1-steerQ),0,1);
+    window.__vol=volatility;
+
+    if(reduce){ displayOverall=targetOverall; render(); }
+    else if(!raf){ raf=requestAnimationFrame(tick); }
+  }
+
+  function tick(){
+    displayOverall += (targetOverall-displayOverall)*0.16;
+    render();
+    if(Math.abs(targetOverall-displayOverall)>0.15){ raf=requestAnimationFrame(tick); }
+    else { displayOverall=targetOverall; render(); raf=null; }
+  }
+
+  function render(){
+    document.body.style.background=sky(displayOverall);
+    document.body.style.backgroundAttachment="fixed";
+    drawCone(displayOverall, window.__vol||0);
+  }
+
+  function drawCone(score,vol){
+    const g=document.getElementById("lines");
+    const ox=70, oy=185, ex=585;
+    const centerEndY = oy - (score-50)*1.7;       // up = brighter
+    const spread = 24 + vol*78;                    // half-height of fan
+    const N=11;
+    let html="";
+    for(let i=0;i<N;i++){
+      const frac=(i/(N-1))-0.5;                    // -0.5..0.5
+      const endY=centerEndY+frac*2*spread;
+      const cpx=(ox+ex)/2;
+      const cpy=oy+(endY-oy)*0.42;
+      const lineScore=clamp(score - frac*34,0,100);// upper lines brighter
+      const col=scoreColor(lineScore);
+      const mid=1-Math.abs(frac)*1.5;              // center lines stronger
+      const op=clamp(0.28+mid*0.5,0.16,0.92);
+      const w=(Math.abs(frac)<0.08)?2.4:1.4;
+      html+=`<path d="M${ox} ${oy} Q ${cpx} ${cpy} ${ex} ${endY.toFixed(1)}" fill="none" stroke="${col}" stroke-width="${w}" stroke-opacity="${op.toFixed(2)}" stroke-linecap="round"/>`;
+      html+=`<circle cx="${ex}" cy="${endY.toFixed(1)}" r="${(Math.abs(frac)<0.08?3.2:2)}" fill="${col}" fill-opacity="${op.toFixed(2)}"/>`;
+    }
+    g.innerHTML=html;
+  }
+
+  sliders.forEach(s=>s.addEventListener("input",compute));
+  compute();
+  // ensure first paint of sky even before tween
+  document.body.style.background=sky(50);
+})();
+</script>
+</body>
+</html>
