@@ -1,9 +1,20 @@
 <!DOCTYPE html>
+<!--
+  AI Futures
+  Copyright (c) 2026 Nicholas Sutherland. All Rights Reserved.
+
+  This work and its source code may not be copied, modified, distributed,
+  or used commercially without express written permission from the author.
+  Viewing the published page is permitted; reproduction of the code,
+  design, or content is not. See the LICENSE file for full terms.
+-->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Steering the Future</title>
+<meta name="author" content="Nicholas Sutherland">
+<meta name="copyright" content="© 2026 Nicholas Sutherland. All Rights Reserved.">
+<title>AI Futures</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -19,7 +30,8 @@
     --mono:"IBM Plex Mono",ui-monospace,monospace;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{min-height:100%}
+  html{min-height:100%;background:#0B1026}
+  body{min-height:100%}
   body{
     font-family:var(--body);
     color:var(--ink);
@@ -51,7 +63,7 @@
   .lede{color:var(--muted);max-width:58ch;font-size:clamp(15px,1.8vw,17px)}
 
   /* Layout */
-  .grid{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:22px;align-items:start}
+  .grid{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:22px;align-items:start;margin-top:22px}
   @media(max-width:860px){.grid{grid-template-columns:1fr}}
 
   .panel{
@@ -161,6 +173,7 @@
   .chart-note{font-family:var(--mono);font-size:10px;color:var(--faint);margin-top:5px;opacity:0.8}
   .sources-note{margin-top:18px;font-family:var(--mono);font-size:10.5px;color:var(--faint);line-height:1.7}
   .sources-note a{color:var(--faint);text-decoration:none;border-bottom:1px dotted rgba(107,112,153,0.5)}
+  .credit-line{margin-top:16px;font-family:var(--mono);font-size:11px;letter-spacing:0.04em;color:var(--muted)}
 
   /* svg helper text */
   .c-tick{font-family:var(--mono);font-size:9px;fill:var(--faint)}
@@ -186,7 +199,7 @@
 <div class="wrap">
   <header>
     <h1><span>AI Futures</span></h1>
-    <p class="page-sub">A thought-provoking, interactive experience on the choices we face.</p>
+    <p class="page-sub">A thought-provoking, interactive experience on the choices we face</p>
   </header>
 
   <hr class="section-rule">
@@ -194,7 +207,7 @@
   <section class="act">
 
     <h2 class="act-title soft">Where we are today</h2>
-    <p class="act-dek">Before we imagine our future, three measured facts about the present state of AI: how capable these systems have become, what they cost the climate, and how often they go wrong. <em>(Hover on charts for more details.)</em></p>
+    <p class="act-dek">Before we imagine our future, three measured facts about the present state of AI: </p> 
 
     <div class="charts">
       <div class="chart-card">
@@ -227,8 +240,8 @@
     </div>
   </section>
 
-  <div class="act-eyebrow act-two-label">Act Two · Steer it yourself</div>
-  <p class="lede">AI doesn't arrive with its consequences pre-decided. The outcomes depend on choices we're making right now. Move the four levers below and watch how the world of 2040 bends — for better or worse.</p>
+  <h2 class="act-title soft">Where we are headed tomorrow</h2>
+  <p class="act-dek">AI outcomes depend on choices we're making right now: </p>
 
   <div class="grid">
     <!-- Controls -->
@@ -271,6 +284,7 @@
         <div class="sources-note">
           Act One sources · Epoch AI, "AI Benchmarking Hub", <a href="https://epoch.ai/benchmarks/use-this-data" target="_blank" rel="noopener">epoch.ai</a> (accessed 30 Jun 2026) · IEA, "Energy and AI" (2025), <a href="https://www.iea.org/data-and-statistics/data-product/energy-and-ai" target="_blank" rel="noopener">iea.org</a> — data annex plus Base Case charts for emissions and supply mix; mix values approximate · McGregor, S. (2021), "Preventing Repeated Real World AI Failures by Cataloging Incidents: The AI Incident Database", IAAI-21, <a href="https://incidentdatabase.ai/" target="_blank" rel="noopener">incidentdatabase.ai</a>.
         </div>
+        <div class="credit-line">Created by Nicholas Sutherland · © 2026 · All Rights Reserved.</div>
       </footer>
     </div>
 
