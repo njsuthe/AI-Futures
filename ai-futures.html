@@ -42,7 +42,12 @@
     font-size:clamp(30px,5.2vw,52px);line-height:1.02;
     letter-spacing:-0.02em;margin-bottom:12px;max-width:16ch;
   }
-  h1 .soft{color:var(--muted);font-weight:500}
+  .soft{color:var(--muted);font-weight:500}
+  .page-sub{
+    font-family:var(--mono);font-size:14px;letter-spacing:0.18em;
+    text-transform:uppercase;color:var(--faint);margin:10px 0 0;
+  }
+  .section-rule{border:none;border-top:1px solid rgba(150,160,220,0.15);margin:28px 0}
   .lede{color:var(--muted);max-width:58ch;font-size:clamp(15px,1.8vw,17px)}
 
   /* Layout */
@@ -180,14 +185,15 @@
 <body>
 <div class="wrap">
   <header>
-    
-    <h1>The same technology.<br><span class="soft">Very different AI futures.</span></h1>
-    <p class="lede">A thought-provoking, interactive experience intent on considering the implications of the choices we make today.</p>
+    <h1><span>AI Futures</span></h1>
+    <p class="page-sub">A thought-provoking, interactive experience on the choices we face.</p>
   </header>
 
+  <hr class="section-rule">
+
   <section class="act">
-    
-    <h2 class="act-title">Where we are today</h2>
+
+    <h2 class="act-title soft">Where we are today</h2>
     <p class="act-dek">Before we imagine our future, three measured facts about the present state of AI: how capable these systems have become, what they cost the climate, and how often they go wrong. <em>(Hover on charts for more details.)</em></p>
 
     <div class="charts">
@@ -207,7 +213,7 @@
           <span><i style="background:#D85C6E"></i>Fossil</span>
           <span><i style="background:#E9B45C;border-radius:9px;width:12px;height:3px"></i>CO₂</span>
         </div>
-        <div class="chart-caption">Data center energy demand projects to more than quadruple by 2035, yet CO₂ emissions project to peak around 2030 if the energy supply mix can continue to shift toward renewables.</div>
+        <div class="chart-caption">Data center energy demand projects to more than quadruple by 2035, yet CO₂ emissions project to peak and ease up around 2030 if energy supply can continue to shift toward renewables.</div>
         <div class="chart-source">Source: <a href="https://www.iea.org/data-and-statistics/data-product/energy-and-ai" target="_blank" rel="noopener">IEA · Energy and AI (2025)</a></div>
         
       </div>
