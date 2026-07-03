@@ -67,11 +67,13 @@
   @media(max-width:860px){.grid{grid-template-columns:1fr}}
 
   .panel{
+    position:relative;z-index:1;
     background:var(--glass);
     border:1px solid var(--glass-line);
     border-radius:18px;padding:22px;
     backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
   }
+  .panel.raised{z-index:50}
   .panel + .panel{margin-top:18px}
   .panel-title{
     font-family:var(--mono);font-size:11px;letter-spacing:0.18em;
@@ -79,11 +81,30 @@
   }
 
   /* Levers */
-  .lever{margin-bottom:22px}
+  .lever{position:relative;margin-bottom:22px}
   .lever:last-child{margin-bottom:4px}
   .lever-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px;gap:10px}
   .lever-name{font-family:var(--display);font-weight:600;font-size:15.5px}
   .lever-val{font-family:var(--mono);font-size:12px;color:var(--ink);opacity:0.85;white-space:nowrap}
+  .info-btn{
+    background:none;border:none;padding:0 2px;margin-left:1px;
+    font-family:var(--mono);font-size:13px;line-height:1;color:var(--faint);
+    cursor:pointer;vertical-align:1px;transition:color .18s ease;
+  }
+  .info-btn:hover{color:var(--ink)}
+  .info-btn:focus-visible{outline:2px solid rgba(120,160,255,0.7);outline-offset:2px;border-radius:50%}
+  .lever-tip{
+    position:absolute;left:0;right:0;top:26px;z-index:70;
+    background:rgba(11,16,38,0.94);border:1px solid var(--glass-line);border-radius:10px;
+    padding:10px 12px;font-size:11.5px;color:var(--ink);line-height:1.42;
+    box-shadow:0 10px 30px rgba(0,0,0,0.45);
+    opacity:0;visibility:hidden;pointer-events:none;transition:opacity .12s ease,visibility .12s ease;
+  }
+  .lever-tip.on{opacity:1;visibility:visible;pointer-events:auto}
+  .lever-tip .t-h{font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:4px;letter-spacing:0.14em;text-transform:uppercase}
+  .lever-tip .t-src{font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-top:7px;letter-spacing:0.02em;line-height:1.6}
+  .lever-tip .t-src a{color:var(--muted);text-decoration:none;border-bottom:1px dotted var(--faint)}
+  .lever-tip .t-src a:hover{color:var(--ink)}
   .poles{display:flex;justify-content:space-between;font-size:11.5px;color:var(--faint);margin-top:7px}
   input[type=range]{
     -webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:5px;
@@ -120,7 +141,8 @@
   .axis-label{font-family:var(--mono);font-size:11px;fill:var(--faint);letter-spacing:0.1em}
 
   /* Domain cards */
-  .domains{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}
+  .domains{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:18px}
+  @media(max-width:860px){.domains{grid-template-columns:repeat(2,minmax(0,1fr))}}
   @media(max-width:560px){.domains{grid-template-columns:1fr}}
   .card{
     background:var(--glass);border:1px solid var(--glass-line);border-radius:16px;
@@ -148,6 +170,10 @@
     font-size:clamp(22px,3.4vw,32px);margin-bottom:8px;
   }
   .act-dek{color:var(--muted);max-width:64ch;font-size:clamp(14px,1.7vw,16px)}
+  .act-hint{
+    font-family:var(--mono);font-size:11.5px;letter-spacing:0.03em;
+    color:var(--faint);margin-top:6px;font-style:italic;
+  }
   .act-two-label{margin:6px 0 16px}
 
   /* ---- Fact charts (Act One) ---- */
@@ -207,13 +233,14 @@
   <section class="act">
 
     <h2 class="act-title soft">Where we are today</h2>
-    <p class="act-dek">Before we imagine our future, three measured facts about the present state of AI: </p> 
+    <p class="act-dek">Before we imagine our future, see three measured facts about the present state of AI: </p>
+    <p class="act-hint">(Hover over each chart for increased detail)</p>
 
     <div class="charts">
       <div class="chart-card">
         <div class="chart-title">Capabilities · Epoch index</div>
         <div class="chart-plot"><svg id="chartCap" viewBox="0 0 300 200" role="img" aria-label="AI capability index rising from 2023 to 2026"></svg></div>
-        <div class="chart-caption">Each dot is an AI model; the line traces peak capability. Epoch's AI Capabilities Index has climbed from ~95 to ~161 since the early 2023 AI boom.</div>
+        <div class="chart-caption">Each dot is an AI model; the line traces the frontier of capabilities. Epoch's AI Capabilities Index has climbed from ~95 to ~161 since the early 2023 AI boom.</div>
         <div class="chart-source">Source: <a href="https://epoch.ai/benchmarks/use-this-data" target="_blank" rel="noopener">Epoch AI · AI Benchmarking Hub</a></div>
       </div>
 
@@ -227,55 +254,76 @@
           <span><i style="background:#E9B45C;border-radius:9px;width:12px;height:3px"></i>CO₂</span>
         </div>
         <div class="chart-caption">Data center energy demand projects to more than quadruple by 2035, yet CO₂ emissions project to peak and ease up around 2030 if energy supply can continue to shift toward renewables.</div>
-        <div class="chart-source">Source: <a href="https://www.iea.org/data-and-statistics/data-product/energy-and-ai" target="_blank" rel="noopener">IEA · Energy and AI (2025)</a></div>
+        <div class="chart-source">Source: <a href="https://www.iea.org/reports/energy-and-ai/energy-supply-for-ai" target="_blank" rel="noopener">IEA · Energy for AI (2025)</a></div>
         
       </div>
 
       <div class="chart-card">
         <div class="chart-title">Incidents · AI Incident Database</div>
         <div class="chart-plot"><svg id="chartInc" viewBox="0 0 300 200" role="img" aria-label="Reported AI incidents per year, 2015 to 2026"></svg></div>
-        <div class="chart-caption">Reported AI incidents have risen roughly 18× since 2015. Hover over a white marker for details on a notable case.</div>
-        <div class="chart-source">Source: <a href="https://incidentdatabase.ai/" target="_blank" rel="noopener">AI Incident Database</a> · McGregor (2021)</div>
+        <div class="chart-caption">Reported AI incidents have risen roughly 18× since 2015. Markers highlight several troubling, notable cases.</div>
+        <div class="chart-source">Source: <a href="https://incidentdatabase.ai/apps/incidents/" target="_blank" rel="noopener">AI Incident Database</a> · McGregor (2021)</div>
       </div>
     </div>
   </section>
 
   <h2 class="act-title soft">Where we are headed tomorrow</h2>
   <p class="act-dek">AI outcomes depend on choices we're making right now: </p>
+  <p class="act-hint">(Move the four levers, or try a preset path, and watch as the world of 2040 changes)</p>
 
   <div class="grid">
     <!-- Controls -->
     <div>
       <div class="panel">
-        <div class="panel-title">The four levers</div>
+        <div class="panel-title">Four critical levers</div>
 
         <div class="lever">
-          <div class="lever-head"><span class="lever-name">How fast we build</span><span class="lever-val" id="v0">— balanced</span></div>
+          <div class="lever-head"><span class="lever-name">How fast we build <button class="info-btn" aria-expanded="false" aria-controls="tip0" aria-label="Why this lever matters">ⓘ</button></span><span class="lever-val" id="v0">— balanced</span></div>
+          <div class="lever-tip" id="tip0" role="note">
+            <div class="t-h">Pace</div>
+            <p>The case for speed: Epoch AI's capability index has climbed ~15.5 points a year since 2024, with training compute growing ~5× annually — opportunity that compounds. The case for deliberation: reported AI incidents keep setting records, and Stuart Russell calls the race a prisoner's dilemma — everyone would be better off slowing until safety is solved, yet each actor feels compelled to keep racing.</p>
+            <div class="t-src">Sources: <a href="https://epoch.ai/trends" target="_blank" rel="noopener">Epoch AI · Trends</a> · <a href="https://incidentdatabase.ai/apps/incidents/" target="_blank" rel="noopener">AI Incident Database</a> · <a href="https://danfaggella.com/russell1/" target="_blank" rel="noopener">Russell (2026)</a></div>
+          </div>
           <input type="range" min="0" max="100" value="85" id="l0" aria-label="How fast we build">
           <div class="poles"><span>Deliberate</span><span>Full speed</span></div>
         </div>
 
         <div class="lever">
-          <div class="lever-head"><span class="lever-name">Who gets the keys</span><span class="lever-val" id="v1">— balanced</span></div>
+          <div class="lever-head"><span class="lever-name">Who gets the keys <button class="info-btn" aria-expanded="false" aria-controls="tip1" aria-label="Why this lever matters">ⓘ</button></span><span class="lever-val" id="v1">— balanced</span></div>
+          <div class="lever-tip" id="tip1" role="note">
+            <div class="t-h">Access</div>
+            <p>Stanford's 2026 AI Index finds both poles in motion. Five hyperscalers now control over two-thirds of global AI compute, and model transparency is falling — yet generative AI reached ~53% of people within three years, faster than the PC or the internet. Few hands promise control and accountability; many hands spread the gains — and the risks.</p>
+            <div class="t-src">Sources: <a href="https://hai.stanford.edu/ai-index/2026-ai-index-report" target="_blank" rel="noopener">Stanford HAI · 2026 AI Index</a> · <a href="https://hai.stanford.edu/news/inside-the-ai-index-12-takeaways-from-the-2026-report" target="_blank" rel="noopener">12 takeaways</a></div>
+          </div>
           <input type="range" min="0" max="100" value="38" id="l1" aria-label="Who gets the keys">
           <div class="poles"><span>A few players</span><span>Everyone</span></div>
         </div>
 
         <div class="lever">
-          <div class="lever-head"><span class="lever-name">How tightly we govern</span><span class="lever-val" id="v2">— balanced</span></div>
+          <div class="lever-head"><span class="lever-name">How tightly we govern <button class="info-btn" aria-expanded="false" aria-controls="tip2" aria-label="Why this lever matters">ⓘ</button></span><span class="lever-val" id="v2">— balanced</span></div>
+          <div class="lever-tip" id="tip2" role="note">
+            <div class="t-h">Governance</div>
+            <p>The OECD AI Principles — the first intergovernmental AI standard, now adhered to by 47 countries plus the EU — name the tension directly: AI should be both innovative and trustworthy. Hands off bets that rules can't keep pace with the technology and would slow discovery; strong oversight bets that transparency, accountability, and safety standards are what make AI durable enough to trust.</p>
+            <div class="t-src">Sources: <a href="https://oecd.ai/en/ai-principles" target="_blank" rel="noopener">OECD AI Principles</a> · <a href="https://oecd.ai/en/" target="_blank" rel="noopener">OECD.AI Policy Observatory</a></div>
+          </div>
           <input type="range" min="0" max="100" value="30" id="l2" aria-label="How tightly we govern">
           <div class="poles"><span>Hands off</span><span>Strong oversight</span></div>
         </div>
 
         <div class="lever">
-          <div class="lever-head"><span class="lever-name">What we build it for</span><span class="lever-val" id="v3">— balanced</span></div>
+          <div class="lever-head"><span class="lever-name">What we build it for <button class="info-btn" aria-expanded="false" aria-controls="tip3" aria-label="Why this lever matters">ⓘ</button></span><span class="lever-val" id="v3">— balanced</span></div>
+          <div class="lever-tip" id="tip3" role="note">
+            <div class="t-h">Priority</div>
+            <p>Profit funded today's frontier — but in <i>Human Compatible</i>, Stuart Russell warns that optimizing any narrow, fixed objective invites the King Midas problem: we get what we asked for, not what we meant. Brian Christian's <i>The Alignment Problem</i> traces how systems learn what we specify, not what we intend — and AI Now's 2025 landscape report argues the market is already tilted "heads I win, tails you lose."</p>
+            <div class="t-src">Sources: <a href="https://www.penguinrandomhouse.com/books/566677/human-compatible-by-stuart-russell/" target="_blank" rel="noopener">Human Compatible</a> · <a href="https://brianchristian.org/the-alignment-problem/" target="_blank" rel="noopener">The Alignment Problem</a> · <a href="https://ainowinstitute.org/publications/research/ai-now-2025-landscape-report" target="_blank" rel="noopener">AI Now (2025)</a></div>
+          </div>
           <input type="range" min="0" max="100" value="32" id="l3" aria-label="What we build it for">
           <div class="poles"><span>Profit first</span><span>Public good</span></div>
         </div>
       </div>
 
       <div class="panel">
-        <div class="panel-title">Try a path</div>
+        <div class="panel-title">Potential preset paths</div>
         <div class="presets" id="presets"></div>
       </div>
 
@@ -284,7 +332,10 @@
         <div class="sources-note">
           Act One sources · Epoch AI, "AI Benchmarking Hub", <a href="https://epoch.ai/benchmarks/use-this-data" target="_blank" rel="noopener">epoch.ai</a> (accessed 30 Jun 2026) · IEA, "Energy and AI" (2025), <a href="https://www.iea.org/data-and-statistics/data-product/energy-and-ai" target="_blank" rel="noopener">iea.org</a> — data annex plus Base Case charts for emissions and supply mix; mix values approximate · McGregor, S. (2021), "Preventing Repeated Real World AI Failures by Cataloging Incidents: The AI Incident Database", IAAI-21, <a href="https://incidentdatabase.ai/" target="_blank" rel="noopener">incidentdatabase.ai</a>.
         </div>
-        <div class="credit-line">Created by Nicholas Sutherland · © 2026 · All Rights Reserved.</div>
+        <div class="sources-note">
+          Lever sources · Epoch AI, "Machine Learning Trends", <a href="https://epoch.ai/trends" target="_blank" rel="noopener">epoch.ai</a> · Russell, S., AGI Governance interview (2026), <a href="https://danfaggella.com/russell1/" target="_blank" rel="noopener">danfaggella.com</a>, and <i>Human Compatible</i> (2019), <a href="https://www.penguinrandomhouse.com/books/566677/human-compatible-by-stuart-russell/" target="_blank" rel="noopener">penguinrandomhouse.com</a> · AI Incident Database, <a href="https://incidentdatabase.ai/apps/incidents/" target="_blank" rel="noopener">incidentdatabase.ai</a> · Stanford HAI, "2026 AI Index Report", <a href="https://hai.stanford.edu/ai-index/2026-ai-index-report" target="_blank" rel="noopener">hai.stanford.edu</a> · OECD, "AI Principles" (2019, upd. 2024), <a href="https://oecd.ai/en/ai-principles" target="_blank" rel="noopener">oecd.ai</a> · Christian, B., <i>The Alignment Problem</i> (2020), <a href="https://brianchristian.org/the-alignment-problem/" target="_blank" rel="noopener">brianchristian.org</a> · AI Now Institute, "Artificial Power: 2025 Landscape Report", <a href="https://ainowinstitute.org/publications/research/ai-now-2025-landscape-report" target="_blank" rel="noopener">ainowinstitute.org</a>.
+        </div>
+        <div class="credit-line">Created by Nicholas Sutherland · © 2026 · All Rights Reserved</div>
       </footer>
     </div>
 
@@ -303,8 +354,8 @@
           <line x1="70" y1="140" x2="585" y2="140" stroke="rgba(150,160,220,0.2)" stroke-width="1" stroke-dasharray="2 6"/>
           <g id="lines"></g>
           <circle cx="70" cy="140" r="5" fill="#EAEBF6"/>
-          <text class="axis-label" x="58" y="162">NOW</text>
-          <text class="axis-label" x="556" y="162">2040</text>
+          <text class="axis-label" x="60" y="144" text-anchor="end">NOW</text>
+          <text class="axis-label" x="595" y="144" text-anchor="start">2040</text>
         </svg>
       </div>
 
@@ -321,46 +372,46 @@
   // ---- Domains: weights are contribution to score per +1 of each lever (lever range -1..+1) ----
   // levers order: [pace, access, guard, prio]  (each -1..+1, + = right-hand pole)
   const DOMAINS = [
-    { name:"Jobs & work",        w:[-8, 12,  2, 10], base:50 },
-    { name:"Climate & nature",   w:[-10, 3,  8, 12], base:50 },
-    { name:"Shared prosperity",  w:[-6, 15,  6, 12], base:50 },
-    { name:"Learning & knowledge",w:[ 6, 14, -3,  8], base:50 },
-    { name:"Democracy & trust",  w:[-8,  4, 12,  8], base:50 },
-    { name:"Safety & control",   w:[-14,-4, 16,  6], base:50 },
+    { name:"Jobs & Work",        w:[-8, 12,  2, 10], base:50 },
+    { name:"Climate & Nature",   w:[-10, 3,  8, 12], base:50 },
+    { name:"Prosperity & Equality",  w:[-6, 15,  6, 12], base:50 },
+    { name:"Learning & Knowledge",w:[ 6, 14, -3,  8], base:50 },
+    { name:"Democracy & Trust",  w:[-8,  4, 12,  8], base:50 },
+    { name:"Safety & Control",   w:[-14,-4, 16,  6], base:50 },
   ];
 
   const TEXT = {
-    "Jobs & work":[
+    "Jobs & Work":[
       "Automation outruns retraining. Whole job categories vanish faster than new ones appear, and the safety net frays.",
       "Disruption hits hard. Some thrive, but many are left scrambling to reskill with little support.",
       "Old jobs fade as new ones form. The transition is bumpy and depends a lot on where you live and work.",
       "AI takes the drudgery; people move toward more creative, human work, with real support to retrain.",
       "Work is reimagined. Productivity soars and is broadly shared, freeing people for care, craft, and community."],
-    "Climate & nature":[
+    "Climate & Nature":[
       "A growth-at-all-costs race and surging compute push emissions up while ecosystems get little attention.",
       "AI's energy appetite outweighs its green gains; progress on climate is patchy at best.",
       "AI trims some waste and speeds some clean tech, but its own footprint keeps the ledger near even.",
       "Pointed at the problem, AI accelerates clean energy, smarter grids, and materials science.",
       "AI becomes a climate engine — optimizing energy, modeling ecosystems, unlocking breakthroughs fast."],
-    "Shared prosperity":[
+    "Prosperity & Equality":[
       "Gains pool at the very top. A handful of owners capture the upside while most fall behind.",
       "The wealth gap widens. Benefits are real but reach far fewer people than the disruption does.",
       "Prosperity grows unevenly — some communities surge ahead while others are left out of the story.",
       "Broad access spreads the gains. More people can build, earn, and start something of their own.",
       "Abundance is widely shared. Powerful tools in many hands lift living standards across the board."],
-    "Learning & knowledge":[
+    "Learning & Knowledge":[
       "Real tutoring stays behind paywalls, and a flood of low-quality slop erodes trust in what's true.",
       "Learning tools exist but reach the already-advantaged first, widening the knowledge gap.",
       "Personalized learning spreads slowly and unevenly, alongside new worries about cheating and depth.",
       "A patient tutor for everyone. Curiosity gets cheaper to follow, and skills are easier to build.",
       "Learning is transformed — anyone, anywhere can master almost anything, guided step by step."],
-    "Democracy & trust":[
+    "Democracy & Trust":[
       "Synthetic media and tailored manipulation overwhelm institutions; shared reality splinters.",
       "Misinformation moves faster than the fixes. Trust in elections and media keeps slipping.",
       "Institutions adapt slowly. New tools help and harm public discourse in roughly equal measure.",
       "Provenance tools and transparency help people tell real from fake and rebuild some trust.",
       "AI strengthens civic life — surfacing good information, widening participation, holding power to account."],
-    "Safety & control":[
+    "Safety & Control":[
       "Capabilities sprint ahead of our ability to control them. The margin for a serious accident is thin.",
       "Powerful systems ship faster than they're understood; oversight is always a step behind.",
       "Safety keeps rough pace with capability — real risks remain, but so do real guardrails.",
@@ -530,6 +581,45 @@
     }
     g.innerHTML=html;
   }
+
+  // ---- lever info tips ----
+  const infoBtns=Array.from(document.querySelectorAll(".info-btn"));
+  const tipOf=btn=>document.getElementById(btn.getAttribute("aria-controls"));
+  let tipTimer=null;
+  function closeTips(except){
+    infoBtns.forEach(b=>{
+      const t=tipOf(b);
+      if(t!==except){ t.classList.remove("on"); b.setAttribute("aria-expanded","false"); }
+    });
+    if(!except) document.querySelectorAll(".panel.raised").forEach(p=>p.classList.remove("raised"));
+  }
+  function openTip(btn){
+    clearTimeout(tipTimer);
+    const t=tipOf(btn);
+    closeTips(t);
+    t.classList.add("on"); btn.setAttribute("aria-expanded","true");
+    t.closest(".panel").classList.add("raised");
+  }
+  function scheduleClose(){
+    clearTimeout(tipTimer);
+    tipTimer=setTimeout(()=>closeTips(null),250);
+  }
+  infoBtns.forEach(btn=>{
+    const t=tipOf(btn);
+    let hoverOpened=false; // a click right after hover-open pins the tip instead of closing it
+    btn.addEventListener("click",e=>{
+      e.stopPropagation();
+      if(t.classList.contains("on")&&!hoverOpened) closeTips(null);
+      else { openTip(btn); hoverOpened=false; }
+    });
+    btn.addEventListener("mouseenter",()=>{ openTip(btn); hoverOpened=true; });
+    btn.addEventListener("mouseleave",scheduleClose);
+    t.addEventListener("mouseenter",()=>clearTimeout(tipTimer));
+    t.addEventListener("mouseleave",scheduleClose);
+    t.addEventListener("click",e=>e.stopPropagation());
+  });
+  document.addEventListener("click",()=>closeTips(null));
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeTips(null); });
 
   sliders.forEach(s=>s.addEventListener("input",compute));
   compute();
