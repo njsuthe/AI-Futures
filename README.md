@@ -1,6 +1,8 @@
 # AI Futures
 
-**[ai-futures-interactive.netlify.app](https://ai-futures-interactive.netlify.app/)**
+**[→ View the live site](https://ai-futures-interactive.netlify.app/)**
+
+[![AI Futures preview](docs/hero.png)](https://ai-futures-interactive.netlify.app/)
 
 An interactive, two-act exploration of AI's trajectory. Act One grounds the piece in three measured facts about where things stand today — model capability, data-center energy demand, and reported AI incidents. Act Two hands over four levers (pace, access, governance, purpose) and shows how they bend six domains of everyday life — jobs, climate, prosperity, learning, democracy, and safety — out to 2040.
 
