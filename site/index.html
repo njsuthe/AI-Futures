@@ -580,8 +580,11 @@
     hl.style.color=scoreColor(overall);
 
     // volatility -> cone spread
-    const steerQ=((guard+prio+access)/3+1)/2;            // 0..1
-    const volatility=clamp(relu(pace)*(1-steerQ),0,1);
+    const steerQ=((guard+prio+access)/3+1)/2;            // 0..1, steering quality
+    const baselineShape=clamp(pace+1,0,1);               // 0 at full-deliberate, 1 by pace=50+
+    const racingVol=relu(pace)*(1-steerQ);               // racing ahead without guardrails
+    const baselineVol=0.6*baselineShape*(1-steerQ);      // even neutral pace is uncertain absent steering
+    const volatility=clamp(Math.max(racingVol,baselineVol),0,1);
     window.__vol=volatility;
 
     if(reduce){ displayOverall=targetOverall; render(); }
