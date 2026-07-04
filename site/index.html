@@ -14,6 +14,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="Nicholas Sutherland">
 <meta name="copyright" content="© 2026 Nicholas Sutherland. All Rights Reserved.">
+<meta name="description" content="A thought-provoking, interactive experience on the choices we face: move four levers — pace, access, governance, and purpose — and watch how the world of 2040 bends.">
+<meta property="og:title" content="AI Futures">
+<meta property="og:description" content="An interactive exploration of AI's trajectory. Move four levers — pace, access, governance, and purpose — and watch how the world of 2040 bends.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ai-futures-njs.netlify.app/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230B1026'/><path d='M20 50 Q52 50 82 28' stroke='%234FD0BE' stroke-width='7' fill='none' stroke-linecap='round'/><path d='M20 50 Q52 50 82 50' stroke='%23E9B45C' stroke-width='7' fill='none' stroke-linecap='round'/><path d='M20 50 Q52 50 82 72' stroke='%23D85C6E' stroke-width='7' fill='none' stroke-linecap='round'/><circle cx='20' cy='50' r='9' fill='%23EAEBF6'/></svg>">
 <title>AI Futures</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,20 +42,16 @@
   body{
     font-family:var(--body);
     color:var(--ink);
-    background:#0B1026;
-    background-attachment:fixed;
     line-height:1.5;
     -webkit-font-smoothing:antialiased;
-    transition:none;
   }
+  /* iOS Safari ignores background-attachment:fixed, so the JS-driven sky
+     gradient lives on a fixed backdrop layer instead of the body background */
+  .sky{position:fixed;inset:0;z-index:-1;background:#0B1026}
   .wrap{max-width:1180px;margin:0 auto;padding:38px 22px 64px}
 
   /* Header */
   header{margin-bottom:30px}
-  .eyebrow{
-    font-family:var(--mono);font-size:12px;letter-spacing:0.22em;
-    text-transform:uppercase;color:var(--faint);margin-bottom:14px;
-  }
   h1{
     font-family:var(--display);font-weight:700;
     font-size:clamp(30px,5.2vw,52px);line-height:1.02;
@@ -60,7 +63,6 @@
     text-transform:uppercase;color:var(--faint);margin:10px 0 0;
   }
   .section-rule{border:none;border-top:1px solid rgba(150,160,220,0.15);margin:28px 0}
-  .lede{color:var(--muted);max-width:58ch;font-size:clamp(15px,1.8vw,17px)}
 
   /* Layout */
   .grid{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:22px;align-items:start;margin-top:22px}
@@ -156,15 +158,24 @@
   .meter-fill{height:100%;border-radius:6px;width:50%;transition:width .55s cubic-bezier(.4,0,.2,1),background .55s ease}
   .card-text{font-size:13.5px;color:var(--muted);line-height:1.5;min-height:3.4em;transition:opacity .3s ease}
 
-  footer{margin-top:18px;color:var(--faint);font-size:12.5px;line-height:1.6}
+  footer{margin-top:30px;padding-top:22px;border-top:1px solid rgba(150,160,220,0.15);color:var(--faint);font-size:12.5px;line-height:1.6}
   footer b{color:var(--muted);font-weight:600}
+  .tool-note{margin-top:18px;color:var(--faint);font-size:12.5px;line-height:1.6}
+  .tool-note b{color:var(--muted);font-weight:600}
+  .sources-details{margin-top:16px}
+  .sources-details summary{
+    display:inline-flex;align-items:center;gap:7px;
+    font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;
+    color:var(--faint);cursor:pointer;list-style:none;transition:color .18s ease;
+  }
+  .sources-details summary::-webkit-details-marker{display:none}
+  .sources-details summary::before{content:"▸";display:inline-block;transition:transform .18s ease;font-size:10px}
+  .sources-details[open] summary::before{transform:rotate(90deg)}
+  .sources-details summary:hover{color:var(--muted)}
+  .sources-details summary:focus-visible{outline:2px solid rgba(120,160,255,0.7);outline-offset:3px;border-radius:4px}
 
   /* ---- Act structure ---- */
   .act{margin-bottom:38px}
-  .act-eyebrow{
-    font-family:var(--mono);font-size:12px;letter-spacing:0.22em;
-    text-transform:uppercase;color:var(--faint);margin-bottom:10px;
-  }
   .act-title{
     font-family:var(--display);font-weight:700;letter-spacing:-0.015em;
     font-size:clamp(22px,3.4vw,32px);margin-bottom:8px;
@@ -174,11 +185,10 @@
     font-family:var(--mono);font-size:11.5px;letter-spacing:0.03em;
     color:var(--faint);margin-top:6px;font-style:italic;
   }
-  .act-two-label{margin:6px 0 16px}
 
   /* ---- Fact charts (Act One) ---- */
   .charts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:22px}
-  @media(max-width:860px){.charts{grid-template-columns:1fr;max-width:520px}}
+  @media(max-width:860px){.charts{grid-template-columns:1fr;max-width:520px;margin-inline:auto}}
   .chart-card{
     background:var(--glass);border:1px solid var(--glass-line);border-radius:16px;
     padding:16px 16px 14px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
@@ -196,8 +206,7 @@
   .chart-source{font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-top:10px;letter-spacing:0.02em}
   .chart-source a{color:var(--muted);text-decoration:none;border-bottom:1px dotted var(--faint)}
   .chart-source a:hover{color:var(--ink)}
-  .chart-note{font-family:var(--mono);font-size:10px;color:var(--faint);margin-top:5px;opacity:0.8}
-  .sources-note{margin-top:18px;font-family:var(--mono);font-size:10.5px;color:var(--faint);line-height:1.7}
+  .sources-note{margin-top:12px;font-family:var(--mono);font-size:10.5px;color:var(--faint);line-height:1.7}
   .sources-note a{color:var(--faint);text-decoration:none;border-bottom:1px dotted rgba(107,112,153,0.5)}
   .credit-line{margin-top:16px;font-family:var(--mono);font-size:11px;letter-spacing:0.04em;color:var(--muted)}
 
@@ -216,12 +225,36 @@
   .chart-tip .t-h{font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:3px;letter-spacing:0.03em}
   .chart-tip .t-t{font-weight:600;font-size:12px;margin-bottom:2px}
 
+  /* ---- Phone ---- */
+  @media(max-width:560px){
+    .wrap{padding:28px 16px 48px}
+    .panel{padding:18px}
+    /* the 640-unit cone viewBox scales to ~0.5x on phones; larger SVG-space
+       text keeps the rendered labels legible */
+    #cone .axis-label{font-size:17px}
+  }
+
+  /* ---- Touch targets ---- */
+  @media(pointer:coarse){
+    input[type=range]{
+      height:44px;
+      background:linear-gradient(rgba(150,160,220,0.18),rgba(150,160,220,0.18)) center/100% 5px no-repeat;
+    }
+    input[type=range]::-webkit-slider-thumb{width:24px;height:24px}
+    input[type=range]::-moz-range-thumb{width:24px;height:24px}
+    input[type=range]::-moz-range-track{background:transparent}
+    .info-btn{position:relative}
+    .info-btn::after{content:"";position:absolute;inset:-12px}
+    .preset{padding:10px 14px}
+  }
+
   @media(prefers-reduced-motion:reduce){
     *{transition:none!important}
   }
 </style>
 </head>
 <body>
+<div class="sky" id="sky" aria-hidden="true"></div>
 <div class="wrap">
   <header>
     <h1><span>AI Futures</span></h1>
@@ -232,7 +265,7 @@
 
   <section class="act">
 
-    <h2 class="act-title soft">Where we are today</h2>
+    <h2 class="act-title soft">Understanding Our Present</h2>
     <p class="act-dek">Before we imagine our future, see three measured facts about the present state of AI: </p>
     <p class="act-hint">(Hover over each chart for increased detail)</p>
 
@@ -253,21 +286,20 @@
           <span><i style="background:#D85C6E"></i>Fossil</span>
           <span><i style="background:#E9B45C;border-radius:9px;width:12px;height:3px"></i>CO₂</span>
         </div>
-        <div class="chart-caption">Data center energy demand projects to more than quadruple by 2035, yet CO₂ emissions project to peak and ease up around 2030 if energy supply can continue to shift toward renewables.</div>
+        <div class="chart-caption">Data center energy demand projects to more than quadruple by 2035, but CO₂ emissions should peak by 2030 as power supply shifts to renewables.</div>
         <div class="chart-source">Source: <a href="https://www.iea.org/reports/energy-and-ai/energy-supply-for-ai" target="_blank" rel="noopener">IEA · Energy for AI (2025)</a></div>
-        
       </div>
 
       <div class="chart-card">
         <div class="chart-title">Incidents · AI Incident Database</div>
         <div class="chart-plot"><svg id="chartInc" viewBox="0 0 300 200" role="img" aria-label="Reported AI incidents per year, 2015 to 2026"></svg></div>
-        <div class="chart-caption">Reported AI incidents have risen roughly 18× since 2015. Markers highlight several troubling, notable cases.</div>
+        <div class="chart-caption">Reported AI incidents have risen roughly 18× since 2015, reflecting growing real-world AI impacts. The markers highlight key flashpoints in safety and ethics — click any circle to explore the official case filing.</div>
         <div class="chart-source">Source: <a href="https://incidentdatabase.ai/apps/incidents/" target="_blank" rel="noopener">AI Incident Database</a> · McGregor (2021)</div>
       </div>
     </div>
   </section>
 
-  <h2 class="act-title soft">Where we are headed tomorrow</h2>
+  <h2 class="act-title soft">Shaping Our Future</h2>
   <p class="act-dek">AI outcomes depend on choices we're making right now: </p>
   <p class="act-hint">(Move the four levers, or try a preset path, and watch as the world of 2040 changes)</p>
 
@@ -327,30 +359,15 @@
         <div class="presets" id="presets"></div>
       </div>
 
-      <footer>
-        <b>This is a thinking tool, not a forecast.</b> The directions each lever pushes reflect common themes in expert discussion about AI's effects. The math underneath is deliberately simple and transparent, so the tradeoffs stay visible rather than hidden behind false precision. The real point: notice that no lever is purely good, and that how we steer matters as much as how powerful the technology becomes.
-        <div class="sources-note">
-          Act One sources · Epoch AI, "AI Benchmarking Hub", <a href="https://epoch.ai/benchmarks/use-this-data" target="_blank" rel="noopener">epoch.ai</a> (accessed 30 Jun 2026) · IEA, "Energy and AI" (2025), <a href="https://www.iea.org/data-and-statistics/data-product/energy-and-ai" target="_blank" rel="noopener">iea.org</a> — data annex plus Base Case charts for emissions and supply mix; mix values approximate · McGregor, S. (2021), "Preventing Repeated Real World AI Failures by Cataloging Incidents: The AI Incident Database", IAAI-21, <a href="https://incidentdatabase.ai/" target="_blank" rel="noopener">incidentdatabase.ai</a>.
-        </div>
-        <div class="sources-note">
-          Lever sources · Epoch AI, "Machine Learning Trends", <a href="https://epoch.ai/trends" target="_blank" rel="noopener">epoch.ai</a> · Russell, S., AGI Governance interview (2026), <a href="https://danfaggella.com/russell1/" target="_blank" rel="noopener">danfaggella.com</a>, and <i>Human Compatible</i> (2019), <a href="https://www.penguinrandomhouse.com/books/566677/human-compatible-by-stuart-russell/" target="_blank" rel="noopener">penguinrandomhouse.com</a> · AI Incident Database, <a href="https://incidentdatabase.ai/apps/incidents/" target="_blank" rel="noopener">incidentdatabase.ai</a> · Stanford HAI, "2026 AI Index Report", <a href="https://hai.stanford.edu/ai-index/2026-ai-index-report" target="_blank" rel="noopener">hai.stanford.edu</a> · OECD, "AI Principles" (2019, upd. 2024), <a href="https://oecd.ai/en/ai-principles" target="_blank" rel="noopener">oecd.ai</a> · Christian, B., <i>The Alignment Problem</i> (2020), <a href="https://brianchristian.org/the-alignment-problem/" target="_blank" rel="noopener">brianchristian.org</a> · AI Now Institute, "Artificial Power: 2025 Landscape Report", <a href="https://ainowinstitute.org/publications/research/ai-now-2025-landscape-report" target="_blank" rel="noopener">ainowinstitute.org</a>.
-        </div>
-        <div class="credit-line">Created by Nicholas Sutherland · © 2026 · All Rights Reserved</div>
-      </footer>
+      <p class="tool-note"><b>This is a thinking tool, not a forecast.</b> The directions each lever pushes reflect common themes in expert discussion about AI's effects. The math underneath is deliberately simple and transparent, so the tradeoffs stay visible rather than hidden behind false precision. The real point: notice that no lever is purely good, and that how we steer matters as much as how powerful the technology becomes.</p>
     </div>
 
     <!-- Stage -->
     <div>
       <div class="panel stage">
         <div class="headline" id="headline">A future still up for grabs</div>
-        <div class="sub" id="subline">Overall trajectory across six measures of how life could go.</div>
+        <div class="sub" id="subline">The trajectory widens as uncertainty grows — reckless development creates volatile outcomes</div>
         <svg id="cone" viewBox="0 0 640 280" preserveAspectRatio="xMidYMid meet" role="img" aria-label="A fan of possible trajectories from today to 2040">
-          <defs>
-            <linearGradient id="glow" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stop-color="#fff" stop-opacity="0"/>
-              <stop offset="1" stop-color="#fff" stop-opacity="0.10"/>
-            </linearGradient>
-          </defs>
           <line x1="70" y1="140" x2="585" y2="140" stroke="rgba(150,160,220,0.2)" stroke-width="1" stroke-dasharray="2 6"/>
           <g id="lines"></g>
           <circle cx="70" cy="140" r="5" fill="#EAEBF6"/>
@@ -362,6 +379,16 @@
       <div class="domains" id="domains"></div>
     </div>
   </div>
+
+  <footer>
+    <details class="sources-details">
+      <summary>Sources &amp; further reading</summary>
+      <div class="sources-note">
+        Epoch AI, "AI Benchmarking Hub", <a href="https://epoch.ai/benchmarks/use-this-data" target="_blank" rel="noopener">epoch.ai</a> & "Machine Learning Trends", <a href="https://epoch.ai/trends" target="_blank" rel="noopener">epoch.ai/trends</a> · IEA, "Energy and AI" (2025), <a href="https://www.iea.org/data-and-statistics/data-product/energy-and-ai" target="_blank" rel="noopener">iea.org</a> — data annex plus Base Case charts for emissions and supply mix; mix values approximate · McGregor, S. (2021), "Preventing Repeated Real World AI Failures by Cataloging Incidents: The AI Incident Database", IAAI-21, <a href="https://incidentdatabase.ai/apps/incidents/" target="_blank" rel="noopener">incidentdatabase.ai</a> · Stanford HAI, "2026 AI Index Report", <a href="https://hai.stanford.edu/ai-index/2026-ai-index-report" target="_blank" rel="noopener">hai.stanford.edu</a> · OECD, "AI Principles" (2019, upd. 2024), <a href="https://oecd.ai/en/ai-principles" target="_blank" rel="noopener">oecd.ai</a> · Russell, S., <i>Human Compatible</i> (2019), <a href="https://www.penguinrandomhouse.com/books/566677/human-compatible-by-stuart-russell/" target="_blank" rel="noopener">penguinrandomhouse.com</a> & AGI Governance interview (2026), <a href="https://danfaggella.com/russell1/" target="_blank" rel="noopener">danfaggella.com</a> · Christian, B., <i>The Alignment Problem</i> (2020), <a href="https://brianchristian.org/the-alignment-problem/" target="_blank" rel="noopener">brianchristian.org</a> · AI Now Institute, "Artificial Power: 2025 Landscape Report", <a href="https://ainowinstitute.org/publications/research/ai-now-2025-landscape-report" target="_blank" rel="noopener">ainowinstitute.org</a>.
+      </div>
+    </details>
+    <div class="credit-line">Created by Nicholas J. Sutherland · © 2026 · All Rights Reserved</div>
+  </footer>
 
 </div>
 
@@ -427,9 +454,6 @@
     "A future we steered well",
   ];
 
-  const VAL_WORDS = {
-    0:["full deliberate","fast","balanced","open","everyone"], // placeholder, set per-lever below
-  };
   const LEVER_WORDS = [
     ["full deliberate","deliberate","balanced","fast","full speed"],
     ["locked up","concentrated","balanced","open","wide open"],
@@ -508,7 +532,7 @@
 
     const scores=DOMAINS.map(d=>{
       let s=d.base + d.w[0]*pace + d.w[1]*access + d.w[2]*guard + d.w[3]*prio;
-      if(d.name==="Safety & control") s+=racePenalty;
+      if(d.name==="Safety & Control") s+=racePenalty;
       return clamp(s,2,98);
     });
 
@@ -552,9 +576,9 @@
     else { displayOverall=targetOverall; render(); raf=null; }
   }
 
+  const skyEl=document.getElementById("sky");
   function render(){
-    document.body.style.background=sky(displayOverall);
-    document.body.style.backgroundAttachment="fixed";
+    skyEl.style.background=sky(displayOverall);
     drawCone(displayOverall, window.__vol||0);
   }
 
@@ -624,7 +648,7 @@
   sliders.forEach(s=>s.addEventListener("input",compute));
   compute();
   // ensure first paint of sky even before tween
-  document.body.style.background=sky(50);
+  skyEl.style.background=sky(50);
 })();
 </script>
 
@@ -635,6 +659,8 @@
   "use strict";
   var D = window.CHART_DATA;
   if(!D) return;
+  var TOUCH = window.matchMedia("(hover: none), (pointer: coarse)").matches;
+  var armedMk = null; // incident marker whose tip is showing; a second tap follows its link
   var NS = "http://www.w3.org/2000/svg";
   var VB = {w:300, h:200};
   var TEAL="#4FD0BE", EMBER="#D85C6E", AMBER="#E9B45C", SLATE="#6B7099", INK="#EAEBF6";
@@ -647,8 +673,24 @@
   function showTip(html, evt){
     tip.innerHTML = html; tip.classList.add("on");
     tip.style.left = evt.clientX + "px"; tip.style.top = evt.clientY + "px";
+    // keep the tip inside the viewport: nudge horizontally, drop below the
+    // pointer when there is no room above (offsetWidth/Height ignore the CSS
+    // transform, so the anchor math stays stable across calls)
+    var w = tip.offsetWidth, h = tip.offsetHeight;
+    var left = evt.clientX - w / 2, right = evt.clientX + w / 2;
+    var dx = left < 8 ? 8 - left : (right > innerWidth - 8 ? innerWidth - 8 - right : 0);
+    if(dx) tip.style.left = (evt.clientX + dx) + "px";
+    tip.style.transform = (evt.clientY - 1.12 * h < 8) ? "translate(-50%,18px)" : "";
   }
   function hideTip(){ tip.classList.remove("on"); }
+  var onTipHide = []; // per-chart cleanups (guide lines etc.) for tap-away dismissal
+  if(TOUCH){
+    document.addEventListener("click", function(evt){
+      if(evt.target.closest && evt.target.closest(".chart-plot")) return;
+      hideTip(); armedMk = null;
+      onTipHide.forEach(function(f){ f(); });
+    });
+  }
 
   // ---- helpers ----
   function el(tag, attrs, parent){
@@ -694,16 +736,25 @@
     fr.forEach(function(p){ el("circle", {cx:X(p.x), cy:Y(p.s), r:1.9, fill:TEAL}, svg); });
 
     var last = fr[fr.length - 1];
-    txt({x:X(last.x) - 3, y:Y(last.s) - 6, "text-anchor":"end", "class":"c-callout", fill:INK}, last.n + " · " + Math.round(last.s), svg);
+    var lastName = last.n.replace(/\s*\([^)]*\)\s*$/, "");
+    txt({x:X(last.x) - 3, y:Y(last.s) - 4, "text-anchor":"end", "class":"c-callout", fill:INK}, lastName + " · " + Math.round(last.s), svg);
 
-    svg.addEventListener("mousemove", function(evt){
+    var highlight = dots.find(function(d){ return d.n === "Claude Fable 5"; });
+    if(highlight){
+      el("circle", {cx:X(highlight.x), cy:Y(highlight.s), r:2.6, fill:"none", stroke:TEAL, "stroke-width":1.3}, svg);
+      txt({x:X(highlight.x) - 3, y:Y(highlight.s) - 14, "text-anchor":"end", "class":"c-callout", fill:INK}, highlight.n + " · " + Math.round(highlight.s), svg);
+    }
+
+    function onMove(evt){
       var p = svgPoint(svg, evt), best = null, bd = 1e9;
       dots.forEach(function(d){ var dx = X(d.x) - p.x, dy = Y(d.s) - p.y, dd = dx*dx + dy*dy; if(dd < bd){ bd = dd; best = d; } });
       if(best && bd < 300){
         showTip('<div class="t-h">' + esc(best.o || "—") + ' · ' + fmtYear(best.x) + '</div><div class="t-t">' + esc(best.n) + '</div><div>ECI ' + best.s + '</div>', evt);
       } else hideTip();
-    });
+    }
+    svg.addEventListener("mousemove", onMove);
     svg.addEventListener("mouseleave", hideTip);
+    if(TOUCH) svg.addEventListener("click", onMove);
   })();
 
   // ============================================================ CHART 2: energy
@@ -751,7 +802,7 @@
     }
 
     var guide = el("line", {x1:0, y1:m.t, x2:0, y2:VB.h - m.b, stroke:"rgba(234,235,246,0.35)", "stroke-width":1, opacity:0}, svg);
-    svg.addEventListener("mousemove", function(evt){
+    function onMove(evt){
       var p = svgPoint(svg, evt);
       var yr = Math.round(x0 + (p.x - m.l) / ((VB.w - m.r) - m.l) * (x1 - x0));
       yr = Math.max(x0, Math.min(x1, yr));
@@ -764,21 +815,27 @@
         '<div>Nuclear ' + r.nuclear + '</div>' +
         '<div>Fossil ' + r.fossil + ' (' + shF + '%)</div>' +
         '<div>CO₂ ' + r.co2 + ' Mt</div>', evt);
-    });
+    }
+    svg.addEventListener("mousemove", onMove);
     svg.addEventListener("mouseleave", function(){ guide.setAttribute("opacity", 0); hideTip(); });
+    if(TOUCH){
+      svg.addEventListener("click", onMove);
+      onTipHide.push(function(){ guide.setAttribute("opacity", 0); });
+    }
   })();
 
   // ============================================================ CHART 3: incidents
   (function(){
     var svg = document.getElementById("chartInc"); if(!svg) return;
-    var m = {l:26, r:10, t:26, b:20};
+    var m = {l:26, r:10, t:46, b:20};
     var inc = D.incidents, py = inc.per_year;
     var x0 = py[0].y, x1 = py[py.length - 1].y;
     var maxN = Math.max.apply(null, py.map(function(r){return r.n;}));
     var yMax = Math.ceil(maxN / 100) * 100;
-    var X = scale(x0, x1, m.l, VB.w - m.r);
+    var padX = 8; // keeps the first/last bars clear of the axis and right edge
+    var X = scale(x0, x1, m.l + padX, VB.w - m.r - padX);
     var Y = scale(0, yMax, VB.h - m.b, m.t);
-    var bw = ((VB.w - m.r - m.l) / (x1 - x0 + 1)) * 0.62;
+    var bw = (((VB.w - m.r - padX) - (m.l + padX)) / (x1 - x0 + 1)) * 0.62;
     var byYear = {}; py.forEach(function(r){ byYear[r.y] = r; });
 
     [0, Math.round(yMax / 2), yMax].forEach(function(v){
@@ -789,26 +846,36 @@
       var partial = (r.y === inc.partial_year);
       var h = Math.max(0, (VB.h - m.b) - Y(r.n));
       var rect = el("rect", {x:X(r.y) - bw / 2, y:Y(r.n), width:bw, height:h, rx:1, fill:EMBER, "fill-opacity":partial ? 0.28 : 0.62}, svg);
-      rect.addEventListener("mousemove", function(evt){ showTip('<div class="t-h">' + r.y + (partial ? ' · year-to-date' : '') + '</div><div class="t-t">' + r.n + ' incidents</div>', evt); });
+      function showBar(evt){ showTip('<div class="t-h">' + r.y + (partial ? ' · year-to-date' : '') + '</div><div class="t-t">' + r.n + ' incidents</div>', evt); }
+      rect.addEventListener("mousemove", showBar);
       rect.addEventListener("mouseleave", hideTip);
+      if(TOUCH) rect.addEventListener("click", function(evt){ armedMk = null; showBar(evt); });
       if((r.y - x0) % 3 === 0) txt({x:X(r.y), y:VB.h - m.b + 11, "text-anchor":"middle", "class":"c-tick"}, r.y, svg);
     });
 
     var coi = 0;   // callout index, for two-tier vertical staggering
     inc.notable.forEach(function(mk){
-      var rec = byYear[Math.floor(mk.x)]; if(!rec) return;
+      var by = Math.floor(mk.x);
+      var rec = byYear[by]; if(!rec) return;
       var my = Y(rec.n) - 6;
-      el("line", {x1:X(mk.x), y1:Y(rec.n) - 1, x2:X(mk.x), y2:my, stroke:"rgba(234,235,246,0.35)", "stroke-width":1}, svg);
-      var c = el("circle", {cx:X(mk.x), cy:my, r:3, fill:"#0B1026", stroke:INK, "stroke-width":1.4}, svg);
+      el("line", {x1:X(by), y1:Y(rec.n) - 1, x2:X(by), y2:my, stroke:"rgba(234,235,246,0.35)", "stroke-width":1}, svg);
+      var c = el("circle", {cx:X(by), cy:my, r:3, fill:"#0B1026", stroke:INK, "stroke-width":1.4}, svg);
       c.style.cursor = "pointer";
-      c.addEventListener("mousemove", function(evt){ showTip('<div class="t-h">' + mk.date + '</div><div class="t-t">' + esc(mk.title) + '</div><div>' + esc(mk.desc) + '</div>', evt); });
+      function showMk(evt){ showTip('<div class="t-h">' + mk.date + '</div><div class="t-t">' + esc(mk.title) + '</div><div>' + esc(mk.desc) + '</div>', evt); }
+      c.addEventListener("mousemove", showMk);
       c.addEventListener("mouseleave", hideTip);
+      c.addEventListener("click", function(evt){
+        // on touch the first tap reveals the tip; only a repeat tap follows the link
+        if(TOUCH && armedMk !== mk){ armedMk = mk; showMk(evt); return; }
+        window.open("https://incidentdatabase.ai/cite/" + mk.id, "_blank", "noopener");
+      });
       if(mk.callout){
-        var ly = (coi % 2) ? 19 : 9; coi++;
+        var ly = [14, 40, 40, 14][coi]; coi++;
         var frac = (X(mk.x) - m.l) / ((VB.w - m.r) - m.l);
         var anch = frac < 0.28 ? "start" : (frac > 0.72 ? "end" : "middle");
-        el("line", {x1:X(mk.x), y1:ly + 3, x2:X(mk.x), y2:my - 4, stroke:"rgba(234,235,246,0.18)", "stroke-width":1, "stroke-dasharray":"2 2"}, svg);
-        txt({x:X(mk.x), y:ly, "text-anchor":anch, "class":"c-callout", fill:INK}, mk.label, svg);
+        if(mk.label === "Racist AI chatbot" || mk.label === "Chatbot & teen suicide") anch = "middle";
+        el("line", {x1:X(by), y1:ly + 3, x2:X(by), y2:my - 4, stroke:"rgba(234,235,246,0.18)", "stroke-width":1, "stroke-dasharray":"2 2"}, svg);
+        txt({x:X(by), y:ly, "text-anchor":anch, "class":"c-callout", fill:INK}, mk.label, svg);
       }
     });
   })();

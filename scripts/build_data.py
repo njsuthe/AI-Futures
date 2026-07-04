@@ -3,7 +3,7 @@
 Build compact chart data for the "Where We Are Today" section (Act 1).
 
 Reads the raw sources in data/raw/ and writes a single small file,
-data/processed/charts-data.js, that assigns window.CHART_DATA. It is loaded
+site/data/processed/charts-data.js, that assigns window.CHART_DATA. It is loaded
 via a plain <script src> tag so the artifact keeps working on a bare
 double-click (file://), where fetch() of local files is blocked.
 
@@ -24,7 +24,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw"
-OUT = ROOT / "data" / "processed" / "charts-data.js"
+OUT = ROOT / "site" / "data" / "processed" / "charts-data.js"
 
 
 # --------------------------------------------------------------------------
@@ -138,13 +138,14 @@ def build_energy():
 # --------------------------------------------------------------------------
 CURATED = [
     # id, short label (shown on-chart only when callout=True), callout
-    (1,   "First logged",      True),
-    (6,   "Tay chatbot",       False),
-    (4,   "First AV death",    False),
-    (374, "Exam algorithm",    False),
-    (694, "AI political ad",   True),
-    (826, "Companion-AI harm", False),
-    (940, "Self-driving crash", True),
+    (1,   "First logged",         False),
+    (6,   "Racist AI chatbot",    True),
+    (4,   "Fatal AV crash",       True),
+    (121, "Autonomous weapon drone", False),
+    (116, "Amazon AI cameras",    False),
+    (694, "AI political ad",     True),
+    (826, "Chatbot & teen suicide", True),
+    (896, "Wrongful FRT arrests", False),
 ]
 
 

@@ -7,3 +7,10 @@
 
 # Editor
 .vscode/
+
+# Claude Code local config
+.claude/
+
+# Kept locally, not for the public repo
+AI Futures Brief.docx
+data/raw/Data_annex_Energy_and_AI.xlsx
