@@ -65,7 +65,7 @@
   .section-rule{border:none;border-top:1px solid rgba(150,160,220,0.15);margin:28px 0}
 
   /* Layout */
-  .grid{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:22px;align-items:start;margin-top:22px}
+  .grid{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:22px;align-items:start;margin-top:16px}
   @media(max-width:860px){
     /* promote the two column wrappers so their panels interleave in one flow,
        putting the cone directly under the sliders (see live feedback) */
@@ -146,30 +146,30 @@
   .preset:focus-visible{outline:2px solid rgba(120,160,255,0.7);outline-offset:2px}
 
   /* Stage / cone */
-  .stage{position:relative;overflow:hidden}
+  .stage{position:relative;overflow:hidden;padding:16px 22px}
   .headline{
     font-family:var(--display);font-weight:700;font-size:clamp(20px,3vw,28px);
-    letter-spacing:-0.01em;margin-bottom:4px;transition:color .5s ease;
+    letter-spacing:-0.01em;margin-bottom:2px;transition:color .5s ease;
   }
-  .sub{color:var(--muted);font-size:13.5px;margin-bottom:6px}
+  .sub{color:var(--muted);font-size:13.5px;margin-bottom:4px}
   svg{display:block;width:100%;height:auto}
   .axis-label{font-family:var(--mono);font-size:11px;fill:var(--faint);letter-spacing:0.1em}
 
   /* Domain cards */
-  .domains{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:18px}
+  .domains{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}
   @media(max-width:860px){.domains{grid-template-columns:repeat(2,minmax(0,1fr))}}
   @media(max-width:560px){.domains{grid-template-columns:1fr}}
   .card{
     background:var(--glass);border:1px solid var(--glass-line);border-radius:16px;
-    padding:16px 17px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    padding:14px 16px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
   }
-  .card-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:11px;gap:8px}
+  .card-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px;gap:8px}
   .card-name{font-family:var(--display);font-weight:600;font-size:15px}
   .score{font-family:var(--mono);font-size:12px}
   .score b{font-size:15px;font-weight:500}
-  .meter{height:6px;border-radius:6px;background:rgba(150,160,220,0.15);overflow:hidden;margin-bottom:11px}
+  .meter{height:6px;border-radius:6px;background:rgba(150,160,220,0.15);overflow:hidden;margin-bottom:9px}
   .meter-fill{height:100%;border-radius:6px;width:50%;transition:width .55s cubic-bezier(.4,0,.2,1),background .55s ease}
-  .card-text{font-size:13.5px;color:var(--muted);line-height:1.5;min-height:3.4em;transition:opacity .3s ease}
+  .card-text{font-size:13.5px;color:var(--muted);line-height:1.5;min-height:3em;transition:opacity .3s ease}
 
   footer{margin-top:30px;padding-top:22px;border-top:1px solid rgba(150,160,220,0.15);color:var(--faint);font-size:12.5px;line-height:1.6}
   footer b{color:var(--muted);font-weight:600}
@@ -380,18 +380,18 @@
       <div class="panel stage">
         <div class="headline" id="headline">A future still up for grabs</div>
         <div class="sub" id="subline">The trajectory widens as uncertainty grows — reckless development creates volatile outcomes</div>
-        <svg id="cone" viewBox="0 0 640 250" preserveAspectRatio="xMidYMid meet" role="img" aria-label="A projected trajectory to 2040 with a widening band of uncertainty">
+        <svg id="cone" viewBox="0 0 640 190" preserveAspectRatio="xMidYMid meet" role="img" aria-label="A projected trajectory to 2040 with a widening band of uncertainty">
           <defs>
             <linearGradient id="bandGrad" x1="0" y1="0" x2="0" y2="1">
               <stop id="bandStopTop" offset="0"/>
               <stop id="bandStopBot" offset="1"/>
             </linearGradient>
           </defs>
-          <line x1="70" y1="125" x2="585" y2="125" stroke="rgba(150,160,220,0.2)" stroke-width="1" stroke-dasharray="2 6"/>
+          <line x1="70" y1="95" x2="585" y2="95" stroke="rgba(150,160,220,0.2)" stroke-width="1" stroke-dasharray="2 6"/>
           <g id="lines"></g>
-          <circle cx="70" cy="125" r="5" fill="#EAEBF6"/>
-          <text class="axis-label" x="60" y="129" text-anchor="end">NOW</text>
-          <text class="axis-label" x="595" y="129" text-anchor="start">2040</text>
+          <circle cx="70" cy="95" r="5" fill="#EAEBF6"/>
+          <text class="axis-label" x="60" y="99" text-anchor="end">NOW</text>
+          <text class="axis-label" x="595" y="99" text-anchor="start">2040</text>
         </svg>
       </div>
 
@@ -603,10 +603,10 @@
 
   function drawCone(score,vol){
     const g=document.getElementById("lines");
-    const ox=70, oy=125, ex=585, H=250;
-    const spread = 18 + vol*66;                    // half-height of the uncertainty band
+    const ox=70, oy=95, ex=585, H=190;
+    const spread = 14 + vol*50;                    // half-height of the uncertainty band
     // up = better outcome; clamp so the widest bands (e.g. Corpo) stay inside the frame
-    const centerEndY = clamp(oy - (score-50)*1.55, spread+10, H-spread-10);
+    const centerEndY = clamp(oy - (score-50)*1.18, spread+8, H-spread-8);
     const topY=centerEndY-spread, botY=centerEndY+spread;
     const cpx=(ox+ex)/2;
     const cy=ey=>(oy+(ey-oy)*0.42).toFixed(1);     // shared curve control point
