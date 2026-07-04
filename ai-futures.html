@@ -66,20 +66,7 @@
 
   /* Layout */
   .grid{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:22px;align-items:start;margin-top:22px}
-  @media(max-width:860px){
-    /* promote the two column wrappers so their panels interleave in one flow,
-       putting the cone directly under the sliders (see live feedback) */
-    .grid{display:flex;flex-direction:column;gap:18px}
-    .grid > div{display:contents}
-    .panel-levers{order:1}
-    .stage{order:2}
-    .panel-presets{order:3}
-    .domains{order:4}
-    .tool-note{order:5}
-    .panel + .panel{margin-top:0}
-    .domains{margin-top:0}
-    .tool-note{margin-top:0}
-  }
+  @media(max-width:860px){.grid{grid-template-columns:1fr}}
 
   .panel{
     position:relative;z-index:1;
@@ -319,7 +306,7 @@
   <div class="grid">
     <!-- Controls -->
     <div>
-      <div class="panel panel-levers">
+      <div class="panel">
         <div class="panel-title">Four critical levers</div>
 
         <div class="lever">
@@ -367,7 +354,7 @@
         </div>
       </div>
 
-      <div class="panel panel-presets">
+      <div class="panel">
         <div class="panel-title">Potential preset paths</div>
         <div class="presets" id="presets"></div>
       </div>
@@ -380,18 +367,12 @@
       <div class="panel stage">
         <div class="headline" id="headline">A future still up for grabs</div>
         <div class="sub" id="subline">The trajectory widens as uncertainty grows — reckless development creates volatile outcomes</div>
-        <svg id="cone" viewBox="0 0 640 250" preserveAspectRatio="xMidYMid meet" role="img" aria-label="A projected trajectory to 2040 with a widening band of uncertainty">
-          <defs>
-            <linearGradient id="bandGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop id="bandStopTop" offset="0"/>
-              <stop id="bandStopBot" offset="1"/>
-            </linearGradient>
-          </defs>
-          <line x1="70" y1="125" x2="585" y2="125" stroke="rgba(150,160,220,0.2)" stroke-width="1" stroke-dasharray="2 6"/>
+        <svg id="cone" viewBox="0 0 640 280" preserveAspectRatio="xMidYMid meet" role="img" aria-label="A fan of possible trajectories from today to 2040">
+          <line x1="70" y1="140" x2="585" y2="140" stroke="rgba(150,160,220,0.2)" stroke-width="1" stroke-dasharray="2 6"/>
           <g id="lines"></g>
-          <circle cx="70" cy="125" r="5" fill="#EAEBF6"/>
-          <text class="axis-label" x="60" y="129" text-anchor="end">NOW</text>
-          <text class="axis-label" x="595" y="129" text-anchor="start">2040</text>
+          <circle cx="70" cy="140" r="5" fill="#EAEBF6"/>
+          <text class="axis-label" x="60" y="144" text-anchor="end">NOW</text>
+          <text class="axis-label" x="595" y="144" text-anchor="start">2040</text>
         </svg>
       </div>
 
@@ -603,32 +584,25 @@
 
   function drawCone(score,vol){
     const g=document.getElementById("lines");
-    const ox=70, oy=125, ex=585, H=250;
-    const spread = 18 + vol*66;                    // half-height of the uncertainty band
-    // up = better outcome; clamp so the widest bands (e.g. Corpo) stay inside the frame
-    const centerEndY = clamp(oy - (score-50)*1.55, spread+10, H-spread-10);
-    const topY=centerEndY-spread, botY=centerEndY+spread;
-    const cpx=(ox+ex)/2;
-    const cy=ey=>(oy+(ey-oy)*0.42).toFixed(1);     // shared curve control point
-    const colTop=scoreColor(clamp(score+16,0,100));
-    const colBot=scoreColor(clamp(score-16,0,100));
-    const colMid=scoreColor(score);
-    document.getElementById("bandStopTop").setAttribute("stop-color",colTop);
-    document.getElementById("bandStopBot").setAttribute("stop-color",colBot);
-
-    // band: upper bound out to 2040, down the right edge, lower bound back to now
-    const band=`M${ox} ${oy} Q ${cpx} ${cy(topY)} ${ex} ${topY.toFixed(1)} `
-      +`L ${ex} ${botY.toFixed(1)} Q ${cpx} ${cy(botY)} ${ox} ${oy} Z`;
-    const upper=`M${ox} ${oy} Q ${cpx} ${cy(topY)} ${ex} ${topY.toFixed(1)}`;
-    const lower=`M${ox} ${oy} Q ${cpx} ${cy(botY)} ${ex} ${botY.toFixed(1)}`;
-    const central=`M${ox} ${oy} Q ${cpx} ${cy(centerEndY)} ${ex} ${centerEndY.toFixed(1)}`;
-
+    const ox=70, oy=140, ex=585;
+    const spread = 24 + vol*78;                    // half-height of fan
+    // up = brighter; clamp so the widest fans (e.g. Corpo) stay inside the 280-tall frame
+    const centerEndY = clamp(oy - (score-50)*1.7, spread+8, 280-spread-8);
+    const N=11;
     let html="";
-    html+=`<path d="${band}" fill="url(#bandGrad)" fill-opacity="0.18" stroke="none"/>`;
-    html+=`<path d="${upper}" fill="none" stroke="${colTop}" stroke-width="1" stroke-opacity="0.4"/>`;
-    html+=`<path d="${lower}" fill="none" stroke="${colBot}" stroke-width="1" stroke-opacity="0.4"/>`;
-    html+=`<path d="${central}" fill="none" stroke="${colMid}" stroke-width="2.6" stroke-linecap="round"/>`;
-    html+=`<circle cx="${ex}" cy="${centerEndY.toFixed(1)}" r="4" fill="${colMid}"/>`;
+    for(let i=0;i<N;i++){
+      const frac=(i/(N-1))-0.5;                    // -0.5..0.5
+      const endY=centerEndY+frac*2*spread;
+      const cpx=(ox+ex)/2;
+      const cpy=oy+(endY-oy)*0.42;
+      const lineScore=clamp(score - frac*34,0,100);// upper lines brighter
+      const col=scoreColor(lineScore);
+      const mid=1-Math.abs(frac)*1.5;              // center lines stronger
+      const op=clamp(0.28+mid*0.5,0.16,0.92);
+      const w=(Math.abs(frac)<0.08)?2.4:1.4;
+      html+=`<path d="M${ox} ${oy} Q ${cpx} ${cpy} ${ex} ${endY.toFixed(1)}" fill="none" stroke="${col}" stroke-width="${w}" stroke-opacity="${op.toFixed(2)}" stroke-linecap="round"/>`;
+      html+=`<circle cx="${ex}" cy="${endY.toFixed(1)}" r="${(Math.abs(frac)<0.08?3.2:2)}" fill="${col}" fill-opacity="${op.toFixed(2)}"/>`;
+    }
     g.innerHTML=html;
   }
 
