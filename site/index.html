@@ -238,6 +238,7 @@
   .chart-tip.on{opacity:1}
   .chart-tip .t-h{font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:3px;letter-spacing:0.03em}
   .chart-tip .t-t{font-weight:600;font-size:12px;margin-bottom:2px}
+  .chart-tip .t-hint{font-family:var(--mono);font-size:10px;color:var(--faint);margin-top:5px;letter-spacing:0.02em}
 
   /* ---- Phone ---- */
   @media(max-width:560px){
@@ -288,7 +289,7 @@
         <div class="chart-title">Capabilities · Epoch index</div>
         <div class="chart-plot"><svg id="chartCap" viewBox="0 0 300 200" role="img" aria-label="AI capability index rising from 2023 to 2026"></svg></div>
         <div class="chart-caption">Each dot is an AI model; the line traces the frontier of capabilities. Epoch's AI Capabilities Index has climbed from ~95 to ~161 since the early 2023 AI boom.</div>
-        <div class="chart-source">Source: <a href="https://epoch.ai/benchmarks/use-this-data" target="_blank" rel="noopener">Epoch AI · AI Benchmarking Hub</a></div>
+        <div class="chart-source">Source: <a href="https://epoch.ai/benchmarks?view=graph&tab=eci" target="_blank" rel="noopener">Epoch AI · AI Benchmarking Hub</a></div>
       </div>
 
       <div class="chart-card">
@@ -307,7 +308,7 @@
       <div class="chart-card">
         <div class="chart-title">Incidents · AI Incident Database</div>
         <div class="chart-plot"><svg id="chartInc" viewBox="0 0 300 200" role="img" aria-label="Reported AI incidents per year, 2015 to 2026"></svg></div>
-        <div class="chart-caption">Reported AI incidents have risen roughly 18× since 2015, reflecting growing real-world AI impacts. The markers highlight key flashpoints in safety and ethics — click any circle to explore the official case filing.</div>
+        <div class="chart-caption">Reported AI incidents have risen roughly 18× since 2015, reflecting growing real-world AI impacts. The markers highlight key flashpoints in safety and ethics — click any circle or bar to explore the official case filings.</div>
         <div class="chart-source">Source: <a href="https://incidentdatabase.ai/apps/incidents/" target="_blank" rel="noopener">AI Incident Database</a> · McGregor (2021)</div>
       </div>
     </div>
@@ -696,6 +697,7 @@
   if(!D) return;
   var TOUCH = window.matchMedia("(hover: none), (pointer: coarse)").matches;
   var armedMk = null; // incident marker whose tip is showing; a second tap follows its link
+  var armedBarYear = null; // incident bar (year) whose tip is showing; a second tap opens its year
   var NS = "http://www.w3.org/2000/svg";
   var VB = {w:300, h:200};
   var TEAL="#4FD0BE", EMBER="#D85C6E", AMBER="#E9B45C", SLATE="#6B7099", INK="#EAEBF6";
@@ -722,7 +724,7 @@
   if(TOUCH){
     document.addEventListener("click", function(evt){
       if(evt.target.closest && evt.target.closest(".chart-plot")) return;
-      hideTip(); armedMk = null;
+      hideTip(); armedMk = null; armedBarYear = null;
       onTipHide.forEach(function(f){ f(); });
     });
   }
@@ -877,15 +879,32 @@
       el("line", {x1:m.l, y1:Y(v), x2:VB.w - m.r, y2:Y(v), stroke:"rgba(150,160,220,0.10)"}, svg);
       txt({x:m.l - 4, y:Y(v) + 3, "text-anchor":"end", "class":"c-tick"}, v, svg);
     });
+    // link a bar out to that year, pre-filtered on the AI Incident Database
+    // (Discover app; epoch_incident_date_* bounds are Unix seconds for the year)
+    function yearURL(year){
+      var min = Math.floor(Date.UTC(year, 0, 1) / 1000);
+      var max = Math.floor(Date.UTC(year + 1, 0, 1) / 1000) - 1;
+      return "https://incidentdatabase.ai/apps/discover/?display=list"
+        + "&epoch_incident_date_min=" + min + "&epoch_incident_date_max=" + max;
+    }
+    var pitch = ((VB.w - m.r - padX) - (m.l + padX)) / (x1 - x0 + 1);
     py.forEach(function(r){
       var partial = (r.y === inc.partial_year);
       var h = Math.max(0, (VB.h - m.b) - Y(r.n));
-      var rect = el("rect", {x:X(r.y) - bw / 2, y:Y(r.n), width:bw, height:h, rx:1, fill:EMBER, "fill-opacity":partial ? 0.28 : 0.62}, svg);
-      function showBar(evt){ showTip('<div class="t-h">' + r.y + (partial ? ' · year-to-date' : '') + '</div><div class="t-t">' + r.n + ' incidents</div>', evt); }
-      rect.addEventListener("mousemove", showBar);
-      rect.addEventListener("mouseleave", hideTip);
-      if(TOUCH) rect.addEventListener("click", function(evt){ armedMk = null; showBar(evt); });
+      el("rect", {x:X(r.y) - bw / 2, y:Y(r.n), width:bw, height:h, rx:1, fill:EMBER, "fill-opacity":partial ? 0.28 : 0.62}, svg);
       if((r.y - x0) % 3 === 0) txt({x:X(r.y), y:VB.h - m.b + 11, "text-anchor":"middle", "class":"c-tick"}, r.y, svg);
+
+      // full-height transparent hit target: the thin early bars are hard to hover/tap
+      var hit = el("rect", {x:X(r.y) - pitch / 2, y:m.t, width:pitch, height:(VB.h - m.b) - m.t, fill:"transparent"}, svg);
+      hit.style.cursor = "pointer";
+      function showBar(evt){ showTip('<div class="t-h">' + r.y + (partial ? ' · year-to-date' : '') + '</div><div class="t-t">' + r.n + ' incidents</div><div class="t-hint">Click to view ' + r.y + '’s incidents →</div>', evt); }
+      hit.addEventListener("mousemove", showBar);
+      hit.addEventListener("mouseleave", hideTip);
+      hit.addEventListener("click", function(evt){
+        // touch: first tap reveals the tip, a second tap on the same bar opens the year
+        if(TOUCH && armedBarYear !== r.y){ armedBarYear = r.y; armedMk = null; showBar(evt); return; }
+        window.open(yearURL(r.y), "_blank", "noopener");
+      });
     });
 
     var coi = 0;   // callout index, for two-tier vertical staggering
@@ -901,7 +920,7 @@
       c.addEventListener("mouseleave", hideTip);
       c.addEventListener("click", function(evt){
         // on touch the first tap reveals the tip; only a repeat tap follows the link
-        if(TOUCH && armedMk !== mk){ armedMk = mk; showMk(evt); return; }
+        if(TOUCH && armedMk !== mk){ armedMk = mk; armedBarYear = null; showMk(evt); return; }
         window.open("https://incidentdatabase.ai/cite/" + mk.id, "_blank", "noopener");
       });
       if(mk.callout){
