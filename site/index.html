@@ -656,7 +656,6 @@
   // ---- lever info tips ----
   const infoBtns=Array.from(document.querySelectorAll(".info-btn"));
   const tipOf=btn=>document.getElementById(btn.getAttribute("aria-controls"));
-  let tipTimer=null;
   function closeTips(except){
     infoBtns.forEach(b=>{
       const t=tipOf(b);
@@ -665,28 +664,17 @@
     if(!except) document.querySelectorAll(".panel.raised").forEach(p=>p.classList.remove("raised"));
   }
   function openTip(btn){
-    clearTimeout(tipTimer);
     const t=tipOf(btn);
     closeTips(t);
     t.classList.add("on"); btn.setAttribute("aria-expanded","true");
     t.closest(".panel").classList.add("raised");
   }
-  function scheduleClose(){
-    clearTimeout(tipTimer);
-    tipTimer=setTimeout(()=>closeTips(null),250);
-  }
   infoBtns.forEach(btn=>{
     const t=tipOf(btn);
-    let hoverOpened=false; // a click right after hover-open pins the tip instead of closing it
     btn.addEventListener("click",e=>{
       e.stopPropagation();
-      if(t.classList.contains("on")&&!hoverOpened) closeTips(null);
-      else { openTip(btn); hoverOpened=false; }
+      if(t.classList.contains("on")) closeTips(null); else openTip(btn);
     });
-    btn.addEventListener("mouseenter",()=>{ openTip(btn); hoverOpened=true; });
-    btn.addEventListener("mouseleave",scheduleClose);
-    t.addEventListener("mouseenter",()=>clearTimeout(tipTimer));
-    t.addEventListener("mouseleave",scheduleClose);
     t.addEventListener("click",e=>e.stopPropagation());
   });
   document.addEventListener("click",()=>closeTips(null));
