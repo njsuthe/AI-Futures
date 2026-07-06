@@ -894,8 +894,9 @@
       el("rect", {x:X(r.y) - bw / 2, y:Y(r.n), width:bw, height:h, rx:1, fill:EMBER, "fill-opacity":partial ? 0.28 : 0.62}, svg);
       if((r.y - x0) % 3 === 0) txt({x:X(r.y), y:VB.h - m.b + 11, "text-anchor":"middle", "class":"c-tick"}, r.y, svg);
 
-      // full-height transparent hit target: the thin early bars are hard to hover/tap
-      var hit = el("rect", {x:X(r.y) - pitch / 2, y:m.t, width:pitch, height:(VB.h - m.b) - m.t, fill:"transparent"}, svg);
+      // transparent hit target: wider than the bar itself (thin early bars are hard to
+      // hover/tap) but only as tall as the bar, so the tooltip never fires above it
+      var hit = el("rect", {x:X(r.y) - pitch / 2, y:Y(r.n), width:pitch, height:h, fill:"transparent"}, svg);
       hit.style.cursor = "pointer";
       function showBar(evt){ showTip('<div class="t-h">' + r.y + (partial ? ' · year-to-date' : '') + '</div><div class="t-t">' + r.n + ' incidents</div><div class="t-hint">Click to view ' + r.y + '’s incidents →</div>', evt); }
       hit.addEventListener("mousemove", showBar);
