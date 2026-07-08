@@ -155,15 +155,15 @@
 
   /* Domain cards */
   .domains{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}
-  @media(max-width:860px){.domains{grid-template-columns:repeat(2,minmax(0,1fr))}}
-  @media(max-width:560px){.domains{grid-template-columns:1fr}}
+  @media(max-width:1180px){.domains{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:900px){.domains{grid-template-columns:1fr}}
   .card{
     background:var(--glass);border:1px solid var(--glass-line);border-radius:16px;
     padding:14px 16px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
   }
-  .card-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px;gap:8px}
-  .card-name{font-family:var(--display);font-weight:600;font-size:15px}
-  .score{font-family:var(--mono);font-size:12px}
+  .card-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px;gap:4px}
+  .card-name{font-family:var(--display);font-weight:600;font-size:14px}
+  .score{font-family:var(--mono);font-size:10.5px}
   .score b{font-size:15px;font-weight:500}
   .meter{height:6px;border-radius:6px;background:rgba(150,160,220,0.15);overflow:hidden;margin-bottom:9px}
   .meter-fill{height:100%;border-radius:6px;width:50%;transition:width .55s cubic-bezier(.4,0,.2,1),background .55s ease}
@@ -288,7 +288,7 @@
       <div class="chart-card">
         <div class="chart-title">Capabilities · Epoch index</div>
         <div class="chart-plot"><svg id="chartCap" viewBox="0 0 300 200" role="img" aria-label="AI capability index rising from 2023 to 2026"></svg></div>
-        <div class="chart-caption">Each dot is an AI model; the line traces the frontier of capabilities. Epoch's AI Capabilities Index has climbed from ~95 to ~161 since the early 2023 AI boom.</div>
+        <div class="chart-caption">Each dot is an AI model; the line traces the frontier of capabilities. Epoch's AI Capabilities Index has surged from ~95 to ~161 since the early 2023 AI boom, as AI models rapidly advance in autonomy, STEM, and agentic tasks.</div>
         <div class="chart-source">Source: <a href="https://epoch.ai/benchmarks?view=graph&tab=eci" target="_blank" rel="noopener">Epoch AI · AI Benchmarking Hub</a></div>
       </div>
 
@@ -438,37 +438,37 @@
   const TEXT = {
     "Jobs & Work":[
       "Automation outruns retraining. Whole job categories vanish faster than new ones appear, and the safety net frays.",
-      "Disruption hits hard. Some thrive, but many are left scrambling to reskill with little support.",
+      "Disruption hits hard. Some thrive, but many are left scrambling to reskill with little support.",
       "Old jobs fade as new ones form. The transition is bumpy and depends a lot on where you live and work.",
       "AI takes the drudgery; people move toward more creative, human work, with real support to retrain.",
       "Work is reimagined. Productivity soars and is broadly shared, freeing people for care, craft, and community."],
     "Climate & Nature":[
       "A growth-at-all-costs race and surging compute push emissions up while ecosystems get little attention.",
       "AI's energy appetite outweighs its green gains; progress on climate is patchy at best.",
-      "AI trims some waste and speeds some clean tech, but its own footprint keeps the ledger near even.",
-      "Pointed at the problem, AI accelerates clean energy, smarter grids, and materials science.",
+      "AI trims some waste and speeds some clean tech, but its own footprint keeps the ledger near even.",
+      "Pointed at the problem, AI accelerates clean energy, smarter grids, and materials science.",
       "AI becomes a climate engine — optimizing energy, modeling ecosystems, unlocking breakthroughs fast."],
     "Prosperity & Equality":[
       "Gains pool at the very top. A handful of owners capture the upside while most fall behind.",
       "The wealth gap widens. Benefits are real but reach far fewer people than the disruption does.",
-      "Prosperity grows unevenly — some communities surge ahead while others are left out of the story.",
-      "Broad access spreads the gains. More people can build, earn, and start something of their own.",
-      "Abundance is widely shared. Powerful tools in many hands lift living standards across the board."],
+      "Prosperity grows unevenly — some communities surge ahead while others are left out of the story.",
+      "Broad access spreads the gains. More people can build, earn, and start something of their own.",
+      "Abundance is widely shared. Powerful tools in many hands lift living standards across the board."],
     "Learning & Knowledge":[
       "Real tutoring stays behind paywalls, and a flood of low-quality slop erodes trust in what's true.",
       "Learning tools exist but reach the already-advantaged first, widening the knowledge gap.",
-      "Personalized learning spreads slowly and unevenly, alongside new worries about cheating and depth.",
+      "Personalized learning spreads slowly and unevenly, alongside new worries about cheating and depth.",
       "A patient tutor for everyone. Curiosity gets cheaper to follow, and skills are easier to build.",
-      "Learning is transformed — anyone, anywhere can master almost anything, guided step by step."],
+      "Learning is transformed — anyone, anywhere can master almost anything, guided step by step."],
     "Democracy & Trust":[
-      "Synthetic media and tailored manipulation overwhelm institutions; shared reality splinters.",
+      "Synthetic media and tailored manipulation overwhelm institutions; shared reality splinters.",
       "Misinformation moves faster than the fixes. Trust in elections and media keeps slipping.",
-      "Institutions adapt slowly. New tools help and harm public discourse in roughly equal measure.",
-      "Provenance tools and transparency help people tell real from fake and rebuild some trust.",
+      "Institutions adapt slowly. New tools help and harm public discourse in roughly equal measure.",
+      "Provenance tools and transparency help people tell real from fake and rebuild some trust.",
       "AI strengthens civic life — surfacing good information, widening participation, holding power to account."],
     "Safety & Control":[
-      "Capabilities sprint ahead of our ability to control them. The margin for a serious accident is thin.",
-      "Powerful systems ship faster than they're understood; oversight is always a step behind.",
+      "Capabilities sprint ahead of our ability to control them. The margin for a serious accident is thin.",
+      "Powerful systems ship faster than they're understood; oversight is always a step behind.",
       "Safety keeps rough pace with capability — real risks remain, but so do real guardrails.",
       "Careful development and strong oversight keep advanced systems testable and in check.",
       "Robust governance and aligned design make powerful AI dependable and broadly trusted."],
@@ -533,7 +533,7 @@
     const c=document.createElement("div");
     c.className="card";
     c.innerHTML=`<div class="card-head"><span class="card-name">${d.name}</span>
-      <span class="score" id="sc${i}"><b>50</b> / 100</span></div>
+      <span class="score" id="sc${i}"><b>50</b>/100</span></div>
       <div class="meter"><div class="meter-fill" id="mf${i}"></div></div>
       <div class="card-text" id="ct${i}"></div>`;
     domainsEl.appendChild(c);
@@ -590,7 +590,7 @@
       const mf=document.getElementById("mf"+i);
       mf.style.width=s+"%"; mf.style.background=col;
       const sc=document.getElementById("sc"+i);
-      sc.innerHTML=`<b style="color:${col}">${Math.round(s)}</b> / 100`;
+      sc.innerHTML=`<b style="color:${col}">${Math.round(s)}</b>/100`;
       document.getElementById("ct"+i).textContent=TEXT[DOMAINS[i].name][band(s)];
     });
 
