@@ -288,7 +288,7 @@
       <div class="chart-card">
         <div class="chart-title">Capabilities · Epoch index</div>
         <div class="chart-plot"><svg id="chartCap" viewBox="0 0 300 200" role="img" aria-label="AI capability index rising from 2023 to 2026"></svg></div>
-        <div class="chart-caption">Each dot is an AI model; the line traces the frontier of capabilities. Epoch's AI Capabilities Index has surged from ~95 to ~161 since the early 2023 AI boom, as AI models rapidly advance in autonomy, STEM, and agentic tasks.</div>
+        <div class="chart-caption">Each dot is an AI model; the line traces the frontier of capabilities. Epoch's AI Capabilities Index has surged from ~110 to ~167 since the early 2023 AI boom, as AI models rapidly advance in autonomy, STEM, and agentic tasks.</div>
         <div class="chart-source">Source: <a href="https://epoch.ai/benchmarks?view=graph&tab=eci" target="_blank" rel="noopener">Epoch AI · AI Benchmarking Hub</a></div>
       </div>
 
@@ -308,7 +308,7 @@
       <div class="chart-card">
         <div class="chart-title">Incidents · AI Incident Database</div>
         <div class="chart-plot"><svg id="chartInc" viewBox="0 0 300 200" role="img" aria-label="Reported AI incidents per year, 2015 to 2026"></svg></div>
-        <div class="chart-caption">Reported AI incidents have risen roughly 18× since 2015, reflecting growing real-world AI impacts. The markers highlight key flashpoints in safety and ethics — click any circle or bar to explore the official case filings.</div>
+        <div class="chart-caption">Reported AI incidents have risen roughly 19× since 2015, reflecting growing real-world AI impacts. The markers highlight key flashpoints in safety and ethics — click any circle or bar to explore the official case filings.</div>
         <div class="chart-source">Source: <a href="https://incidentdatabase.ai/apps/incidents/" target="_blank" rel="noopener">AI Incident Database</a> · McGregor (2021)</div>
       </div>
     </div>
@@ -774,13 +774,23 @@
 
     var last = fr[fr.length - 1];
     var lastName = last.n.replace(/\s*\([^)]*\)\s*$/, "");
-    txt({x:X(last.x) - 3, y:Y(last.s) - 4, "text-anchor":"end", "class":"c-callout", fill:INK}, lastName + " · " + Math.round(last.s), svg);
 
-    var highlight = dots.find(function(d){ return d.n === "Claude Fable 5"; });
-    if(highlight){
-      el("circle", {cx:X(highlight.x), cy:Y(highlight.s), r:2.6, fill:"none", stroke:TEAL, "stroke-width":1.3}, svg);
-      txt({x:X(highlight.x) - 3, y:Y(highlight.s) - 14, "text-anchor":"end", "class":"c-callout", fill:INK}, highlight.n + " · " + Math.round(highlight.s), svg);
+    // GPT-6 Astra and Claude Fable 5.1 sit almost at the same height, so their
+    // label rows are hand-spaced (rather than following the dots) to keep
+    // GPT-6 Astra's row clearly above Claude Fable 5.1's with a visible gap
+    var HIGHLIGHT_OFFSET = {"GPT-6 Astra": 16, "Claude Fable 5.1": 6};
+    var highlightNames = Object.keys(HIGHLIGHT_OFFSET);
+
+    if(highlightNames.indexOf(last.n) === -1){
+      txt({x:X(last.x) - 3, y:Y(last.s) - 4, "text-anchor":"end", "class":"c-callout", fill:INK}, lastName + " · " + Math.round(last.s), svg);
     }
+
+    highlightNames.forEach(function(name){
+      var highlight = dots.find(function(d){ return d.n === name; });
+      if(!highlight) return;
+      el("circle", {cx:X(highlight.x), cy:Y(highlight.s), r:2.6, fill:"none", stroke:TEAL, "stroke-width":1.3}, svg);
+      txt({x:X(highlight.x) - 3, y:Y(highlight.s) - HIGHLIGHT_OFFSET[name], "text-anchor":"end", "class":"c-callout", fill:INK}, name + " · " + Math.round(highlight.s), svg);
+    });
 
     function onMove(evt){
       var p = svgPoint(svg, evt), best = null, bd = 1e9;
@@ -864,7 +874,7 @@
   // ============================================================ CHART 3: incidents
   (function(){
     var svg = document.getElementById("chartInc"); if(!svg) return;
-    var m = {l:26, r:10, t:46, b:20};
+    var m = {l:26, r:10, t:88, b:20};
     var inc = D.incidents, py = inc.per_year;
     var x0 = py[0].y, x1 = py[py.length - 1].y;
     var maxN = Math.max.apply(null, py.map(function(r){return r.n;}));
@@ -908,7 +918,25 @@
       });
     });
 
-    var coi = 0;   // callout index, for two-tier vertical staggering
+    // explicit row + text-anchor per flashpoint label, hand-tuned so none
+    // of the callouts crowd each other or the chart title
+    var CALLOUT_Y = {
+      "Racist AI chatbot": 14,
+      "Hugging Face breached": 14,
+      "Chatbot & teen suicide": 40,
+      "Uber AV fatality": 60,
+      "Zelenskyy deepfake": 80
+    };
+    var CALLOUT_ANCHOR = {
+      "Chatbot & teen suicide": "end",
+      "Zelenskyy deepfake": "end"
+    };
+    // nudges a label off its own tick without recentering it, so it can
+    // clear a neighboring dashed connector on one side without drifting
+    // into the one on the other side
+    var CALLOUT_DX = {
+      "Zelenskyy deepfake": 20
+    };
     inc.notable.forEach(function(mk){
       var by = Math.floor(mk.x);
       var rec = byYear[by]; if(!rec) return;
@@ -925,12 +953,13 @@
         window.open("https://incidentdatabase.ai/cite/" + mk.id, "_blank", "noopener");
       });
       if(mk.callout){
-        var ly = [14, 40, 40, 14][coi]; coi++;
+        var ly = CALLOUT_Y[mk.label] != null ? CALLOUT_Y[mk.label] : 14;
         var frac = (X(mk.x) - m.l) / ((VB.w - m.r) - m.l);
         var anch = frac < 0.28 ? "start" : (frac > 0.72 ? "end" : "middle");
-        if(mk.label === "Racist AI chatbot" || mk.label === "Chatbot & teen suicide") anch = "middle";
+        if(mk.label === "Racist AI chatbot") anch = "middle";
+        if(CALLOUT_ANCHOR[mk.label]) anch = CALLOUT_ANCHOR[mk.label];
         el("line", {x1:X(by), y1:ly + 3, x2:X(by), y2:my - 4, stroke:"rgba(234,235,246,0.18)", "stroke-width":1, "stroke-dasharray":"2 2"}, svg);
-        txt({x:X(by), y:ly, "text-anchor":anch, "class":"c-callout", fill:INK}, mk.label, svg);
+        txt({x:X(by) + (CALLOUT_DX[mk.label] || 0), y:ly, "text-anchor":anch, "class":"c-callout", fill:INK}, mk.label, svg);
       }
     });
   })();

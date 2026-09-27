@@ -139,13 +139,17 @@ def build_energy():
 CURATED = [
     # id, short label (shown on-chart only when callout=True), callout
     (1,   "First logged",         False),
+    (267, "Clearview AI scraping", False),
     (6,   "Racist AI chatbot",    True),
-    (4,   "Fatal AV crash",       True),
+    (4,   "Uber AV fatality",     True),
+    (89,  "Christchurch & YouTube", False),
     (121, "Autonomous weapon drone", False),
     (116, "Amazon AI cameras",    False),
-    (694, "AI political ad",     True),
+    (198, "Zelenskyy deepfake", True),
+    (694, "AI political ad",     False),
     (826, "Chatbot & teen suicide", True),
     (896, "Wrongful FRT arrests", False),
+    (1604, "Hugging Face breached", True),
 ]
 
 
